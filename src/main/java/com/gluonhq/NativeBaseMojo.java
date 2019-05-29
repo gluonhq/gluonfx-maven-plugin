@@ -109,6 +109,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.executable", defaultValue = "java")
     String executable;
 
+    @Parameter(property = "client.enableCheckHash", defaultValue = "true")
+    String enableCheckHash;
+
     private ProcessDestroyer processDestroyer;
 
     Config clientConfig;
@@ -138,6 +141,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         List<File> classPath = getCompileClasspathElements(project);
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
         clientConfig.setGraalLibsUserPath(graalLibsPath);
+
+        clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
     }
 
     ProcessDestroyer getProcessDestroyer() {
