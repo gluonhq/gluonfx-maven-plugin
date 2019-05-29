@@ -100,7 +100,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.releaseSymbolsList")
     List<String> releaseSymbolsList;
 
-    @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/omega/deps")
+    @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
     File outputDir;
 
     @Parameter(property = "client.mainClass", required = true)

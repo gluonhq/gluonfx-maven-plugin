@@ -63,7 +63,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
                 .map(File::getAbsolutePath)
                 .collect(Collectors.joining(File.pathSeparator));
 
-        String buildRoot = outputDir.toPath().getParent().toString();
+        String buildRoot = outputDir.toPath().toString();
         getLog().debug("BuildRoot: " + buildRoot);
 
         String cp = cp0 + File.pathSeparator;
