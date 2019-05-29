@@ -47,11 +47,11 @@ public class NativeLinkMojo extends NativeBaseMojo {
         super.execute();
 
         try {
-            File omega = outputDir.toPath().getParent().toFile();
-            Path tmpPath = omega.toPath().resolve("gvm").resolve("tmp");
+            File client = outputDir.toPath().toFile();
+            Path tmpPath = client.toPath().resolve("gvm").resolve("tmp");
             getLog().debug("Start linking in " + tmpPath.toString());
 
-            Omega.nativeLink(omega.getAbsolutePath(), tmpPath, clientConfig, target);
+            Omega.nativeLink(client.getAbsolutePath(), tmpPath, clientConfig, target);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

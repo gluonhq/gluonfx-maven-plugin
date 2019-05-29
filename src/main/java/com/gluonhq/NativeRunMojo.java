@@ -43,10 +43,10 @@ public class NativeRunMojo extends NativeBaseMojo {
         super.execute();
 
         try {
-            Path omega = outputDir.toPath().getParent();
-            getLog().debug("Start running in " + omega.toString());
+            Path client = outputDir.toPath();
+            getLog().debug("Start running in " + client.toString());
 
-            Omega.nativeRun(omega, clientConfig, target);
+            Omega.nativeRun(client, clientConfig, target);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
