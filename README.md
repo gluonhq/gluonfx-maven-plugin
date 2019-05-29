@@ -121,4 +121,9 @@ Only if you need to, you can modify the default settings, by specifying
     
 ### Requirements
 
-At this moment the plugin is in beta, and only supports Mac OS X.
+Set `JAVA_HOME` to JDK 11.
+
+For now, only Mac OS X is supported. Therefore, a Mac with MacOS X 10.13.2 or superior, and Xcode 9.2 or superior, available from the Mac App Store, are required.
+
+Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [gradle samples](https://github.com/gluonhq/client-samples/tree/master/Gradle).
+
