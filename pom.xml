@@ -34,7 +34,7 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>client-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>client-maven-plugin Maven Mojo</name>
   <description>The Gluon Client Plugin is used to run JavaFX 11+ projects with Graal</description>
   <inceptionYear>2019</inceptionYear>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.gluonhq</groupId>
       <artifactId>omega</artifactId>
-      <version>0.0.5</version>
+      <version>0.0.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -94,6 +94,13 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>gluon-snapshots</id>
+      <url>https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots</url>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -122,6 +129,13 @@
   </licenses>
 
   <distributionManagement>
+    <snapshotRepository>
+      <!-- Publish the versioned snapshots here -->
+      <id>gluon-snapshots</id>
+      <name>Gluon Snapshots</name>
+      <url>http://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/</url>
+    </snapshotRepository>
+
     <repository>
       <!-- Publish the versioned releases here -->
       <id>gluon-releases</id>
