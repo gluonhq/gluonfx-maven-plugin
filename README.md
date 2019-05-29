@@ -17,11 +17,26 @@ Using the `plugins` DSL, add:
     plugins {
         id 'com.gluonhq.client-gradle-plugin' version '0.0.1'
     }
+    
+This requires adding the plugin repository to the `settings.gradle` file:
+
+    pluginManagement {
+        repositories {
+            maven {
+                url "https://nexus.gluonhq.com/nexus/content/repositories/releases"
+            }
+            gradlePluginPortal()
+        }
+    }
+    rootProject.name = ...
 
 Alternatively, you can use the `buildscript` DSL:
 
     buildscript {
         repositories {
+            maven {
+                url "https://nexus.gluonhq.com/nexus/content/repositories/releases"
+            }
             maven {
                 url "https://plugins.gradle.org/m2/"
             }
