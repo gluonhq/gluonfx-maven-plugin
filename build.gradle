@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.gluonhq'
-version '0.0.1'
+version '0.0.2-SNAPSHOT'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -20,12 +20,15 @@ repositories {
     maven {
         url "https://nexus.gluonhq.com/nexus/content/repositories/releases"
     }
+    maven {
+        url "https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots"
+    }
 }
 
 dependencies {
     implementation gradleApi()
 
-    implementation 'com.gluonhq:omega:0.0.5'
+    implementation 'com.gluonhq:omega:0.0.6-SNAPSHOT'
 }
 
 gradlePlugin {
@@ -55,7 +58,7 @@ publishing {
     }
     repositories {
         maven {
-           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://nexus.gluonhq.com/nexus/content/repositories/snapshots/'
+           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/'
            def repositoryUsername = project.hasProperty('repositoryUsername') ? project.getProperty('repositoryUsername') :  project.getProperty('gluonNexusUsername')
            def repositoryPassword = project.hasProperty('repositoryPassword') ? project.getProperty('repositoryPassword') :  project.getProperty('gluonNexusPassword')
 
