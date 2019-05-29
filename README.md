@@ -26,11 +26,11 @@ The plugin allows some options that can be set in `configuration`, to modify the
 
 ### 2. Goals
 
-You can run the regular goals to build and run your project as a regular Java project, if you use the `javafx-maven-plugin` plugin:
+You can run the regular goals to build and run your project as a regular Java project on the JVM, if you use the `javafx-maven-plugin` plugin:
 
     mvn clean javafx:run
     
-Once the project is ready, the plugin has these main goals:    
+Once the project is ready, the Client plugin has these main goals:    
 
 #### `client:compile`
 
@@ -44,13 +44,13 @@ The results will be available at `target/client/gvm`.
 
 #### `client:link`
 
-When the object is created, this goal will generate the native executable for the target platform.
+When the project is compiled for the target platform, this goal will generate the native executable.
 
 Run:
 
     mvn client:link
     
-The results will be available at `target/client/$targetPlatform/$AppName.app`.
+The results will be available at `target/client/$targetPlatform/$AppName`.
     
 #### `client:build`
 
@@ -66,7 +66,7 @@ Run:
     
 Or run directly the application from command line:
 
-    target/client/$targetPlatform/$AppName.app/$AppName    
+    target/client/$targetPlatform/$AppName/$AppName    
     
 On Mac OS X it will create a distributable application.
 
