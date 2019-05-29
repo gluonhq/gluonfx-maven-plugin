@@ -13,7 +13,6 @@ To use the plugin, apply the following steps:
 Edit your pom file and add the plugin:
 
     <plugin>
-    
         <groupId>com.gluonhq</groupId>
         <artifactId>client-maven-plugin</artifactId>
         <version>0.0.1</version>
@@ -21,6 +20,13 @@ Edit your pom file and add the plugin:
             <mainClass>your.mainClass</mainClass>
         </configuration>
     </plugin>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gluon-releases</id>
+            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 The plugin allows some options that can be set in `configuration`, to modify the default settings, and several goals, to build and run the native application.
 
@@ -72,4 +78,8 @@ On Mac OS X it will create a distributable application.
 
 ## Requirements
 
-At this moment the plugin is in beta, and only supports Mac OS X for now.
+Set `JAVA_HOME` to JDK 11.
+
+For now, only Mac OS X is supported. Therefore, a Mac with MacOS X 10.13.2 or superior, and Xcode 9.2 or superior, available from the Mac App Store, are required.
+
+Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [maven samples](https://github.com/gluonhq/client-samples/tree/master/Maven).
