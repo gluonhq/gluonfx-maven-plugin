@@ -1,0 +1,76 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'com.github.hierynomus.license' version '0.15.0'
+    id 'com.gradle.plugin-publish' version '0.10.0'
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'maven-publish'
+}
+
+group 'com.gluonhq'
+version '0.0.1'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+        url "https://nexus.gluonhq.com/nexus/content/repositories/releases"
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+
+    implementation 'com.gluonhq:omega:0.0.5'
+}
+
+gradlePlugin {
+    plugins {
+        javafxPlugin {
+            id = 'com.gluonhq.client-gradle-plugin'
+            displayName = 'Gluon Client Plugin'
+            description = 'Plugin that simplifies using Gluon Client for JavaFX projects'
+            implementationClass = 'com.gluonhq.gradle.ClientPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/gluonhq/client-gradle-plugin'
+    vcsUrl = 'https://github.com/gluonhq/client-gradle-plugin'
+    tags = [ 'java', 'javafx', 'gluon', 'client', 'graal', 'aot' ]
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = 'client-gradle-plugin'
+            version = project.version
+        }
+    }
+    repositories {
+        maven {
+           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://nexus.gluonhq.com/nexus/content/repositories/snapshots/'
+           def repositoryUsername = project.hasProperty('repositoryUsername') ? project.getProperty('repositoryUsername') :  project.getProperty('gluonNexusUsername')
+           def repositoryPassword = project.hasProperty('repositoryPassword') ? project.getProperty('repositoryPassword') :  project.getProperty('gluonNexusPassword')
+
+           url repositoryUrl
+           credentials {
+              username repositoryUsername
+              password repositoryPassword
+          }
+      }
+  }
+}
+
+license {
+    skipExistingHeaders = true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
