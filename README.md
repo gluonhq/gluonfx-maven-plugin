@@ -80,7 +80,7 @@ Or run the three tasks combined:
     
 Or run directly the application from command line:
 
-    build/client/$hostPlatform/$AppName.app/$AppName    
+    build/client/$hostPlatform/$AppName/$AppName    
     
 On Mac OS X it will create a distributable application.
 
