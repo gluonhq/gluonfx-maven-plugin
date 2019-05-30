@@ -83,6 +83,8 @@ class ConfigBuild {
         List<Path> classPath = getClassPathFromSourceSets();
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getFileName().toString().contains("javafx")));
         clientConfig.setGraalLibsUserPath(clientExtension.getGraalLibsPath());
+
+        clientConfig.setEnableCheckHash(clientExtension.isEnableCheckHash());
     }
 
     Config getClientConfig() {

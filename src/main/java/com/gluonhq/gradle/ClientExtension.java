@@ -125,6 +125,12 @@ public class ClientExtension {
      */
     private String graalLibsPath;
 
+    /**
+     * Enables hash checking to verify integrity of Graal and Java/JavaFX files
+     * By default is true
+     */
+    private boolean enableCheckHash;
+
     public ClientExtension(Project project) {
         this.graalLibsVersion = DEFAULT_GRAAL_LIBS_VERSION;
         this.javaStaticSdkVersion = DEFAULT_JAVA_STATIC_SDK_VERSION;
@@ -138,6 +144,8 @@ public class ClientExtension {
         this.delayInitList = new ArrayList<>();
         this.runtimeArgsList = new ArrayList<>();
         this.releaseSymbolsList = new ArrayList<>();
+
+        this.enableCheckHash = true;
     }
 
     public String getGraalLibsVersion() {
@@ -250,5 +258,13 @@ public class ClientExtension {
     public void setReleaseSymbolsList(List<String> releaseSymbolsList) {
         this.releaseSymbolsList.clear();
         this.releaseSymbolsList.addAll(releaseSymbolsList);
+    }
+
+    public boolean isEnableCheckHash() {
+        return enableCheckHash;
+    }
+
+    public void setEnableCheckHash(boolean enableCheckHash) {
+        this.enableCheckHash = enableCheckHash;
     }
 }
