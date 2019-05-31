@@ -1,0 +1,28 @@
+# use java support
+language: java
+jdk: openjdk11
+
+# run in container
+sudo: false
+
+# use linux as operating system
+os: linux
+
+# Do not run travis install step `./gradlew assemble`
+install: true
+
+# Assemble jars
+script:
+  - mvn clean compile verify
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+
+deploy:
+  # Deploy snapshots & releases on every commit made to master
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      all_branches: true
