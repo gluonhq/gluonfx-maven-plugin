@@ -1,8 +1,11 @@
-# The Gluon Client plugin for Maven
+# Gluon Client plugin for Maven
 
 The Gluon Client plugin for maven projects leverages GraalVM, OpenJDK and JavaFX 11+, 
 by compiling into native code the Java Client application and all its required dependencies, 
 so it can directly be executed as a native application on the target platform.
+
+[![Travis CI](https://api.travis-ci.org/gluonhq/client-maven-plugin.svg?branch=master)](https://travis-ci.org/gluonhq/client-maven-plugin)
+[![BSD-3 license](https://img.shields.io/badge/license-BSD--3-%230778B9.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Getting started
 
@@ -24,7 +27,7 @@ Edit your pom file and add the plugin:
     <pluginRepositories>
         <pluginRepository>
             <id>gluon-releases</id>
-            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+            <url>https://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
         </pluginRepository>
     </pluginRepositories>
 

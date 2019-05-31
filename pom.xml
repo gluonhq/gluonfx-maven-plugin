@@ -133,14 +133,14 @@
       <!-- Publish the versioned snapshots here -->
       <id>gluon-nexus</id>
       <name>Gluon Snapshots</name>
-      <url>http://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/</url>
+      <url>https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/</url>
     </snapshotRepository>
 
     <repository>
       <!-- Publish the versioned releases here -->
       <id>gluon-nexus</id>
       <name>Gluon Releases</name>
-      <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+      <url>https://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
     </repository>
   </distributionManagement>
 </project>
