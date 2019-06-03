@@ -58,15 +58,14 @@ publishing {
     }
     repositories {
         maven {
-           def repositoryUrl = project.hasProperty('repositoryUrl') ? project.getProperty('repositoryUrl') : 'https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/'
-           def repositoryUsername = project.hasProperty('repositoryUsername') ? project.getProperty('repositoryUsername') :  project.getProperty('gluonNexusUsername')
-           def repositoryPassword = project.hasProperty('repositoryPassword') ? project.getProperty('repositoryPassword') :  project.getProperty('gluonNexusPassword')
-
-           url repositoryUrl
-           credentials {
-              username repositoryUsername
-              password repositoryPassword
-          }
+           def repositoryUrl = project.findProperty('repositoryUrl') ?: 'https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots/'
+           if (project.hasProperty('gluonNexusUsername') && project.hasProperty('gluonNexusPassword')) {
+               url repositoryUrl
+               credentials {
+                   username project.property('gluonNexusUsername')
+                   password project.property('gluonNexusPassword')
+               }   
+           }
       }
   }
 }

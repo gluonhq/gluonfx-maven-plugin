@@ -1,0 +1,35 @@
+# use java support
+language: java
+jdk: openjdk11
+
+# run in container
+sudo: false
+
+# use linux as operating system
+os: linux
+
+# Do not run travis install step `./gradlew assemble`
+install: true
+
+# Assemble jars
+script:
+  - ./gradlew clean assemble
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+
+deploy:
+  # Deploy snapshots on every commit made to master
+  - provider: script
+    script: ./gradlew publish -PgluonNexusUsername=$NEXUS_USERNAME -PgluonNexusPassword=$NEXUS_PASSWORD
+    skip_cleanup: true
+    on:
+      all_branches: true
+
+  # Deploy releases on every tag push
+  - provider: script
+    script: ./gradlew publish -PgluonNexusUsername=$NEXUS_USERNAME -PgluonNexusPassword=$NEXUS_PASSWORD -PrepositoryUrl=https://nexus.gluonhq.com/nexus/content/repositories/releases
+    skip_cleanup: true
+    on:
+      tags: true

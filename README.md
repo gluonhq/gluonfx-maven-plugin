@@ -1,8 +1,11 @@
-# client-gradle-plugin
+# Gluon Client plugin for Gradle
 
 The Gluon Client plugin for gradle projects leverages GraalVM, OpenJDK and JavaFX 11+, 
 by compiling into native code the Java Client application and all its required dependencies, 
 so it can directly be executed as a native application on the target platform.
+
+[![Travis CI](https://api.travis-ci.org/gluonhq/client-gradle-plugin.svg?branch=master)](https://travis-ci.org/gluonhq/client-gradle-plugin)
+[![BSD-3 license](https://img.shields.io/badge/license-BSD--3-%230778B9.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 
 ## Getting started
