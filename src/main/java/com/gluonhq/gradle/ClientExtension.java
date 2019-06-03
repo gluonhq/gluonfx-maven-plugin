@@ -131,6 +131,12 @@ public class ClientExtension {
      */
     private boolean enableCheckHash;
 
+    /**
+     * Enables verbose output
+     * By default is false
+     */
+    private boolean verbose;
+
     public ClientExtension(Project project) {
         this.graalLibsVersion = DEFAULT_GRAAL_LIBS_VERSION;
         this.javaStaticSdkVersion = DEFAULT_JAVA_STATIC_SDK_VERSION;
@@ -266,5 +272,13 @@ public class ClientExtension {
 
     public void setEnableCheckHash(boolean enableCheckHash) {
         this.enableCheckHash = enableCheckHash;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 }
