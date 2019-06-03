@@ -112,6 +112,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.enableCheckHash", defaultValue = "true")
     String enableCheckHash;
 
+    @Parameter(property = "client.verbose", defaultValue = "false")
+    String verbose;
+
     private ProcessDestroyer processDestroyer;
 
     Config clientConfig;
@@ -143,6 +146,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setGraalLibsUserPath(graalLibsPath);
 
         clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
+        clientConfig.setVerbose("true".equals(verbose));
     }
 
     ProcessDestroyer getProcessDestroyer() {
