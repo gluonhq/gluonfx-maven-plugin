@@ -18,7 +18,7 @@ Edit your pom file and add the plugin:
     <plugin>
         <groupId>com.gluonhq</groupId>
         <artifactId>client-maven-plugin</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.3</version>
         <configuration>
             <mainClass>your.mainClass</mainClass>
         </configuration>
