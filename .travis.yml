@@ -25,7 +25,7 @@ deploy:
     script: ./gradlew publish -PgluonNexusUsername=$NEXUS_USERNAME -PgluonNexusPassword=$NEXUS_PASSWORD
     skip_cleanup: true
     on:
-      all_branches: true
+      branch: master
 
   # Deploy releases on every tag push
   - provider: script
