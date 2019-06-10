@@ -126,6 +126,11 @@ public class ClientExtension {
     private String graalLibsPath;
 
     /**
+     * The path to the directory containing LLC tool.
+     */
+    private String llcPath;
+
+    /**
      * Enables the use of JNI platform
      * By default is true
      */
@@ -159,6 +164,7 @@ public class ClientExtension {
 
         this.useJNI = true;
         this.enableCheckHash = true;
+        this.llcPath = "";
     }
 
     public String getGraalLibsVersion() {
@@ -171,6 +177,14 @@ public class ClientExtension {
 
     public String getGraalLibsPath() {
         return graalLibsPath;
+    }
+
+    public String getLlcPath() {
+        return llcPath;
+    }
+
+    public void setLlcPath(String llcPath) {
+        this.llcPath = llcPath;
     }
 
     public void setGraalLibsPath(String graalLibsPath) {
