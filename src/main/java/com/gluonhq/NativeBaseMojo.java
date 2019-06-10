@@ -64,6 +64,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.graalLibsPath")
     String graalLibsPath;
 
+    @Parameter(property = "client.llcPath")
+    String llcPath;
+
     @Parameter(property = "client.graalLibsVersion", defaultValue = "20.0.0-beta.01")
     String graalLibsVersion;
 
@@ -148,6 +151,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
         clientConfig.setGraalLibsUserPath(graalLibsPath);
 
+        clientConfig.setLlcPath(llcPath);
         clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
         clientConfig.setUseJNI("true".equals(useJNI));
         clientConfig.setVerbose("true".equals(verbose));
