@@ -112,6 +112,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.enableCheckHash", defaultValue = "true")
     String enableCheckHash;
 
+    @Parameter(property = "client.useJNI", defaultValue = "true")
+    String useJNI;
+
     @Parameter(property = "client.verbose", defaultValue = "false")
     String verbose;
 
@@ -146,6 +149,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setGraalLibsUserPath(graalLibsPath);
 
         clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
+        clientConfig.setUseJNI("true".equals(useJNI));
         clientConfig.setVerbose("true".equals(verbose));
     }
 
