@@ -85,6 +85,7 @@ class ConfigBuild {
         clientConfig.setGraalLibsUserPath(clientExtension.getGraalLibsPath());
 
         clientConfig.setEnableCheckHash(clientExtension.isEnableCheckHash());
+        clientConfig.setUseJNI(clientExtension.isUseJNI());
         clientConfig.setVerbose(clientExtension.isVerbose());
     }
 

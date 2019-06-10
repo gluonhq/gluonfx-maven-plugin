@@ -126,6 +126,12 @@ public class ClientExtension {
     private String graalLibsPath;
 
     /**
+     * Enables the use of JNI platform
+     * By default is true
+     */
+    private boolean useJNI;
+
+    /**
      * Enables hash checking to verify integrity of Graal and Java/JavaFX files
      * By default is true
      */
@@ -151,6 +157,7 @@ public class ClientExtension {
         this.runtimeArgsList = new ArrayList<>();
         this.releaseSymbolsList = new ArrayList<>();
 
+        this.useJNI = true;
         this.enableCheckHash = true;
     }
 
@@ -272,6 +279,14 @@ public class ClientExtension {
 
     public void setEnableCheckHash(boolean enableCheckHash) {
         this.enableCheckHash = enableCheckHash;
+    }
+
+    public boolean isUseJNI() {
+        return useJNI;
+    }
+
+    public void setUseJNI(boolean useJNI) {
+        this.useJNI = useJNI;
     }
 
     public boolean isVerbose() {
