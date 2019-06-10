@@ -13,7 +13,7 @@ install: true
 
 # Assemble jars
 script:
-  - ./gradlew clean assemble
+  - ./gradlew --refresh-dependencies clean assemble
 
 cache:
   directories:
