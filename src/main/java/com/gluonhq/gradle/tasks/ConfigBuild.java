@@ -84,6 +84,7 @@ class ConfigBuild {
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getFileName().toString().contains("javafx")));
         clientConfig.setGraalLibsUserPath(clientExtension.getGraalLibsPath());
 
+        clientConfig.setLlcPath(clientExtension.getLlcPath());
         clientConfig.setEnableCheckHash(clientExtension.isEnableCheckHash());
         clientConfig.setUseJNI(clientExtension.isUseJNI());
         clientConfig.setVerbose(clientExtension.isVerbose());
