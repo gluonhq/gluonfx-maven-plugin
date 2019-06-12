@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.gluonhq'
-version '0.0.8-SNAPSHOT'
+version '0.0.8'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -28,7 +28,7 @@ repositories {
 dependencies {
     implementation gradleApi()
 
-    implementation 'com.gluonhq:omega:0.0.9-SNAPSHOT'
+    implementation 'com.gluonhq:omega:0.0.9'
 }
 
 gradlePlugin {
