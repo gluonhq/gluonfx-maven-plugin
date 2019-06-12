@@ -134,8 +134,14 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setGraalLibsVersion(graalLibsVersion);
         clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
-        clientConfig.setTarget(target.toLowerCase(Locale.ROOT));
-        clientConfig.setBackend(backend.toLowerCase(Locale.ROOT));
+        if (target != null && ! target.isEmpty()) {
+            clientConfig.setTarget(target.toLowerCase(Locale.ROOT));
+        } else {
+            clientConfig.setTarget("host");
+        }
+        if (backend != null && ! backend.isEmpty()) {
+            clientConfig.setBackend(backend.toLowerCase(Locale.ROOT));
+        }
         clientConfig.setBundlesList(bundlesList);
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setDelayInitList(delayInitList);
