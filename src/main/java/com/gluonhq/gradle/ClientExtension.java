@@ -36,11 +36,10 @@ import java.util.List;
 
 public class ClientExtension {
 
-    private static final String DEFAULT_GRAAL_LIBS_VERSION = "20.0.0-beta.01";
-    private static final String DEFAULT_JAVA_STATIC_SDK_VERSION = "11-ea+2";
-    private static final String DEFAULT_JAVAFX_STATIC_SDK_VERSION = "13-ea+3";
+    private static final String DEFAULT_GRAAL_LIBS_VERSION = "20.0.0-ea+8";
+    private static final String DEFAULT_JAVA_STATIC_SDK_VERSION = "11-ea+6";
+    private static final String DEFAULT_JAVAFX_STATIC_SDK_VERSION = "13-ea+6";
     private static final String DEFAULT_TARGET = "host";
-    private static final String DEFAULT_BACKEND = "lir";
 
     /**
      * Defines the target platform. Default is host, which refers to the platform
@@ -53,7 +52,7 @@ public class ClientExtension {
     /**
      * Defines the intermediate representation.
      * It can be set to LLVM or LIR.
-     * Default is "LIR"
+     * By default is not set and will be set based on the target platform
      */
     private String backend;
 
@@ -153,7 +152,7 @@ public class ClientExtension {
         this.javaStaticSdkVersion = DEFAULT_JAVA_STATIC_SDK_VERSION;
         this.javafxStaticSdkVersion = DEFAULT_JAVAFX_STATIC_SDK_VERSION;
         this.target = DEFAULT_TARGET;
-        this.backend = DEFAULT_BACKEND;
+        this.backend = "";
         this.bundlesList = new ArrayList<>();
         this.resourcesList = new ArrayList<>();
         this.reflectionList = new ArrayList<>();
