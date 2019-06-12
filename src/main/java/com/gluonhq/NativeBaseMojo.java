@@ -67,19 +67,19 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.llcPath")
     String llcPath;
 
-    @Parameter(property = "client.graalLibsVersion", defaultValue = "20.0.0-beta.01")
+    @Parameter(property = "client.graalLibsVersion", defaultValue = "20.0.0-ea+8")
     String graalLibsVersion;
 
-    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "11-ea+2")
+    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "11-ea+6")
     String javaStaticSdkVersion;
 
-    @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "13-ea+3")
+    @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "13-ea+6")
     String javafxStaticSdkVersion;
 
     @Parameter(property = "client.target", defaultValue = "host")
     String target;
 
-    @Parameter(property = "client.backend", defaultValue = "lir")
+    @Parameter(property = "client.backend")
     String backend;
 
     @Parameter(property = "client.bundlesList")
