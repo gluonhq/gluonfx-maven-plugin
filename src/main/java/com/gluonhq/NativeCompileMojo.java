@@ -70,7 +70,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
         getLog().debug("cp = " + cp);
 
         try {
-            Omega.nativeCompile(buildRoot, clientConfig, cp, target);
+            Omega.nativeCompile(buildRoot, clientConfig, cp);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

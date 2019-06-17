@@ -30,7 +30,9 @@
 
 package com.gluonhq;
 
-import com.gluonhq.omega.Config;
+import com.gluonhq.omega.Configuration;
+import com.gluonhq.omega.model.TargetTriplet;
+import com.gluonhq.omega.util.Constants;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
@@ -123,22 +125,49 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private ProcessDestroyer processDestroyer;
 
-    Config clientConfig;
+    Configuration clientConfig;
 
     public void execute() throws MojoExecutionException {
         configOmega();
     }
 
     private void configOmega() {
-        clientConfig = new Config();
+        clientConfig = new Configuration();
         clientConfig.setGraalLibsVersion(graalLibsVersion);
         clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
-        if (target != null && ! target.isEmpty()) {
-            clientConfig.setTarget(target.toLowerCase(Locale.ROOT));
+
+        String osname = System.getProperty("os.name", "Mac OS X").toLowerCase(Locale.ROOT);
+        TargetTriplet hostTriplet;
+        if (osname.contains("mac")) {
+            hostTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_MAC);
+        } else if (osname.contains("nux")) {
+            hostTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_LINUX, Constants.TARGET_LINUX);
         } else {
-            clientConfig.setTarget("host");
+            throw new RuntimeException("OS " + osname + " not supported");
         }
+        clientConfig.setHost(hostTriplet);
+
+        TargetTriplet targetTriplet = null;
+        switch (target) {
+            case Constants.TARGET_HOST:
+                if (osname.contains("mac")) {
+                    targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_MAC);
+                } else if (osname.contains("nux")) {
+                    targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_LINUX, Constants.TARGET_LINUX);
+                }
+                break;
+            case Constants.TARGET_IOS:
+                targetTriplet = new TargetTriplet(Constants.ARM64_ARCH, Constants.HOST_MAC, Constants.TARGET_IOS);
+                break;
+            case Constants.TARGET_IOS_SIM:
+                targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_IOS);
+                break;
+            default:
+                throw new RuntimeException("No valid target found for " + target);
+        }
+        clientConfig.setTarget(targetTriplet);
+
         if (backend != null && ! backend.isEmpty()) {
             clientConfig.setBackend(backend.toLowerCase(Locale.ROOT));
         }
