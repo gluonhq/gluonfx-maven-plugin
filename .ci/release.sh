@@ -10,4 +10,4 @@ newVersion=${TRAVIS_TAG%.*}.$((${TRAVIS_TAG##*.} + 1))
 sed -i "0,/<version>$TRAVIS_TAG/s//<version>$newVersion-SNAPSHOT/" pom.xml
 
 git commit pom.xml -m "Upgrade version to $newVersion-SNAPSHOT" --author "Github Bot <githubbot@gluonhq.com>"
-git push https://gluon-bot:$GITHUB_PASSWORD@github.com/gluonhq/client-maven-plugin
+git push https://gluon-bot:$GITHUB_PASSWORD@github.com/gluonhq/client-maven-plugin HEAD:master
