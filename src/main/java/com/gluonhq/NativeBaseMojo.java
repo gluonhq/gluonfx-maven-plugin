@@ -30,6 +30,7 @@
 
 package com.gluonhq;
 
+import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.omega.Configuration;
 import com.gluonhq.omega.model.TargetTriplet;
 import com.gluonhq.omega.util.Constants;
@@ -45,8 +46,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
@@ -122,6 +126,13 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.verbose", defaultValue = "false")
     String verbose;
+
+    @Parameter(property = "client.attachList")
+    List<String> attachList;
+
+    @Parameter(property = "client.attachVersion", defaultValue = "4.0.2")
+    String attachVersion;
+
 
     private ProcessDestroyer processDestroyer;
 
@@ -213,5 +224,16 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .collect(Collectors.toList());
         list.add(0, new File(project.getBuild().getOutputDirectory()));
         return list;
+    }
+
+    List<Artifact> getAttachDependencies() {
+        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target, attachVersion);
+        if (attachList != null) {
+            return attachList.stream()
+                .map(attachMap::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }
