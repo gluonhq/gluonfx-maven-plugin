@@ -28,56 +28,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.gluonhq;
+package com.gluonhq.attach;
 
-import com.gluonhq.omega.Omega;
+import com.gluonhq.omega.attach.AttachResolver;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Repository;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
-import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE,
-        requiresDependencyResolution = ResolutionScope.COMPILE)
-public class NativeCompileMojo extends NativeBaseMojo {
+public class AttachArtifactResolver {
 
-    public void execute() throws MojoExecutionException {
-        super.execute();
-
-        // Attach
-        List<Artifact> attachDependencies = getAttachDependencies();
-        project.getArtifacts().addAll(attachDependencies);
-
-        // Compile
-        Compile.compile(project, session, pluginManager);
-
-        // Native Compile
-        String mainClassName = mainClass;
-        String name = project.getName();
-        getLog().debug("mcn = "+mainClassName+" and name = "+name);
-
-        List<File> classPath = getCompileClasspathElements(project);
-        getLog().debug("classPath = " + classPath);
-
-        String cp0 = classPath.stream()
-                .map(File::getAbsolutePath)
-                .collect(Collectors.joining(File.pathSeparator));
-
-        String buildRoot = outputDir.toPath().toString();
-        getLog().debug("BuildRoot: " + buildRoot);
-
-        String cp = cp0 + File.pathSeparator;
-        getLog().debug("cp = " + cp);
-
-        try {
-            Omega.nativeCompile(buildRoot, clientConfig, cp);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Error", e);
-        }
+    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target, String attachVersion) {
+        final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
+        return dependencies.stream()
+                .filter(d -> AttachResolver.DEPENDENCY_GROUP.equals(d.getGroupId()) &&
+                        ! AttachResolver.UTIL_ARTIFACT.equals(d.getArtifactId()))
+                .map(d -> {
+                    AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
+                    return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
+                            asd.getSupportedPlatform(target), d.getType(), attachVersion);
+                })
+                .flatMap(a -> {
+                    Set<Artifact> resolve = resolver.resolve(a);
+                    if (resolve == null) {
+                        return Stream.empty();
+                    }
+                    return resolve.stream();
+                })
+                .distinct()
+                .collect(Collectors.toMap(Artifact::getArtifactId, a -> a));
     }
 }
