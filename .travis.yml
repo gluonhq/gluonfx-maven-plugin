@@ -22,7 +22,7 @@ cache:
 deploy:
   # Deploy snapshots on every commit made to master
   - provider: script
-    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    script: sh .ci/deploy-snapshot.sh
     skip_cleanup: true
     on:
       branch: master
