@@ -30,7 +30,7 @@
 
 package com.gluonhq;
 
-import com.gluonhq.omega.Omega;
+import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -38,6 +38,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
         getLog().debug("cp = " + cp);
 
         try {
-            Omega.nativeCompile(buildRoot, clientConfig, cp);
+            SubstrateDispatcher.nativeCompile(Paths.get(buildRoot), clientConfig, cp);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

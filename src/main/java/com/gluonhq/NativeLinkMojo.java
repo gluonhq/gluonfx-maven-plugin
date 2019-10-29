@@ -29,7 +29,7 @@
  */
 package com.gluonhq;
 
-import com.gluonhq.omega.Omega;
+import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -51,7 +51,7 @@ public class NativeLinkMojo extends NativeBaseMojo {
             Path tmpPath = client.toPath().resolve("gvm").resolve("tmp");
             getLog().debug("Start linking in " + tmpPath.toString());
 
-            Omega.nativeLink(client.getAbsolutePath(), clientConfig);
+            SubstrateDispatcher.nativeLink(client.toPath(), clientConfig);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

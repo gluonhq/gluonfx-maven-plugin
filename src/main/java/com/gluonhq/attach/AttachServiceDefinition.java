@@ -30,8 +30,8 @@
 
 package com.gluonhq.attach;
 
-import com.gluonhq.omega.attach.AttachService;
-import com.gluonhq.omega.util.Constants;
+import com.gluonhq.substrate.Constants;
+import com.gluonhq.substrate.attach.AttachService;
 
 import java.util.Locale;
 import java.util.stream.Collectors;

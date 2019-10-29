@@ -31,9 +31,9 @@
 package com.gluonhq;
 
 import com.gluonhq.attach.AttachArtifactResolver;
-import com.gluonhq.omega.Configuration;
-import com.gluonhq.omega.model.TargetTriplet;
-import com.gluonhq.omega.util.Constants;
+import com.gluonhq.substrate.Constants;
+import com.gluonhq.substrate.model.ProjectConfiguration;
+import com.gluonhq.substrate.model.Triplet;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
@@ -67,16 +68,13 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}")
     File basedir;
 
-    @Parameter(property = "client.graalLibsPath")
-    String graalLibsPath;
+    @Parameter(property = "client.graalHome")
+    String graalHome;
 
     @Parameter(property = "client.llcPath")
     String llcPath;
 
-    @Parameter(property = "client.graalLibsVersion", defaultValue = "20.0.0-ea+17")
-    String graalLibsVersion;
-
-    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "11-ea+6")
+    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "11-ea+8")
     String javaStaticSdkVersion;
 
     @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "13-ea+7")
@@ -136,43 +134,44 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private ProcessDestroyer processDestroyer;
 
-    Configuration clientConfig;
+    ProjectConfiguration clientConfig;
 
     public void execute() throws MojoExecutionException {
-        configOmega();
+        if (!getGraalHome().isPresent()) {
+            throw new MojoExecutionException("Graal installation directory not found." +
+                    " Either set GRAAL_HOME as an environment variable or" +
+                    " set graalHome in client-plugin configuration");
+        }
+        configSubstrate();
     }
 
-    private void configOmega() {
-        clientConfig = new Configuration();
-        clientConfig.setGraalLibsVersion(graalLibsVersion);
+    private void configSubstrate() {
+        clientConfig = new ProjectConfiguration();
+        clientConfig.setGraalPath(getGraalHome().get());
         clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
 
         String osname = System.getProperty("os.name", "Mac OS X").toLowerCase(Locale.ROOT);
-        TargetTriplet hostTriplet;
+        Triplet hostTriplet;
         if (osname.contains("mac")) {
-            hostTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_MAC);
+            hostTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.OS_DARWIN);
         } else if (osname.contains("nux")) {
-            hostTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_LINUX, Constants.TARGET_LINUX);
+            hostTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_LINUX, Constants.OS_LINUX);
         } else {
             throw new RuntimeException("OS " + osname + " not supported");
         }
-        clientConfig.setHost(hostTriplet);
+        clientConfig.setHostTriplet(hostTriplet);
 
-        TargetTriplet targetTriplet = null;
+        Triplet targetTriplet = null;
         switch (target) {
             case Constants.TARGET_HOST:
-                if (osname.contains("mac")) {
-                    targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_MAC);
-                } else if (osname.contains("nux")) {
-                    targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_LINUX, Constants.TARGET_LINUX);
-                }
+                targetTriplet = hostTriplet;
                 break;
             case Constants.TARGET_IOS:
-                targetTriplet = new TargetTriplet(Constants.ARM64_ARCH, Constants.HOST_MAC, Constants.TARGET_IOS);
+                targetTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.OS_DARWIN);
                 break;
             case Constants.TARGET_IOS_SIM:
-                targetTriplet = new TargetTriplet(Constants.AMD64_ARCH, Constants.HOST_MAC, Constants.TARGET_IOS);
+                targetTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.TARGET_IOS);
                 break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
@@ -195,7 +194,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
         List<File> classPath = getCompileClasspathElements(project);
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
-        clientConfig.setGraalLibsUserPath(graalLibsPath);
 
         clientConfig.setLlcPath(llcPath);
         clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
@@ -235,5 +233,14 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .collect(Collectors.toList());
         }
         return new ArrayList<>();
+    }
+    
+    private Optional<String> getGraalHome() {
+        if (graalHome != null) {
+            return Optional.of(graalHome);
+        } else if (System.getenv("GRAAL_HOME") != null) {
+            return Optional.of(System.getenv("GRAAL_HOME"));
+        }
+        return Optional.empty();
     }
 }
