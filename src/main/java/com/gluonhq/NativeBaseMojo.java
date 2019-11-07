@@ -160,7 +160,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         } else {
             throw new RuntimeException("OS " + osname + " not supported");
         }
-        clientConfig.setHostTriplet(hostTriplet);
 
         Triplet targetTriplet = null;
         switch (target) {
