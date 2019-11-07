@@ -74,10 +74,10 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.llcPath")
     String llcPath;
 
-    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "11-ea+8")
+    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "14-ea+2")
     String javaStaticSdkVersion;
 
-    @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "13-ea+7")
+    @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "14-ea+gvm1")
     String javafxStaticSdkVersion;
 
     @Parameter(property = "client.target", defaultValue = "host")
