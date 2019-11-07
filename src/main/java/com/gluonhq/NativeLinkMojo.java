@@ -29,13 +29,12 @@
  */
 package com.gluonhq;
 
-import com.gluonhq.omega.Omega;
+import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import java.io.File;
 import java.nio.file.Path;
 
 
@@ -47,11 +46,11 @@ public class NativeLinkMojo extends NativeBaseMojo {
         super.execute();
 
         try {
-            File client = outputDir.toPath().toFile();
-            Path tmpPath = client.toPath().resolve("gvm").resolve("tmp");
+            Path client = outputDir.toPath();
+            Path tmpPath = client.resolve("gvm").resolve("tmp");
             getLog().debug("Start linking in " + tmpPath.toString());
 
-            Omega.nativeLink(client.getAbsolutePath(), clientConfig);
+            SubstrateDispatcher.nativeLink(client, clientConfig);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

@@ -30,7 +30,7 @@
 
 package com.gluonhq;
 
-import com.gluonhq.omega.Omega;
+import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -46,7 +46,7 @@ public class NativeRunMojo extends NativeBaseMojo {
             Path client = outputDir.toPath();
             getLog().debug("Start running in " + client.toString());
 
-            Omega.nativeRun(client.toString(), clientConfig);
+            SubstrateDispatcher.nativeRun(client, clientConfig);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
