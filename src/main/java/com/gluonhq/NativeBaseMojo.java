@@ -154,9 +154,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         String osname = System.getProperty("os.name", "Mac OS X").toLowerCase(Locale.ROOT);
         Triplet hostTriplet;
         if (osname.contains("mac")) {
-            hostTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.OS_DARWIN);
+            hostTriplet = new Triplet(Constants.Profile.MACOS);
         } else if (osname.contains("nux")) {
-            hostTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_LINUX, Constants.OS_LINUX);
+            hostTriplet = new Triplet(Constants.Profile.LINUX);
         } else {
             throw new RuntimeException("OS " + osname + " not supported");
         }
@@ -168,10 +168,10 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 targetTriplet = hostTriplet;
                 break;
             case Constants.TARGET_IOS:
-                targetTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.OS_DARWIN);
+                targetTriplet = new Triplet(Constants.Profile.IOS);
                 break;
             case Constants.TARGET_IOS_SIM:
-                targetTriplet = new Triplet(Constants.ARCH_AMD64, Constants.VENDOR_APPLE, Constants.TARGET_IOS);
+                targetTriplet = new Triplet(Constants.Profile.IOS_SIM);
                 break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
