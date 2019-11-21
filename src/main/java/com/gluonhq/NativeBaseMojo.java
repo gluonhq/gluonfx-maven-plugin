@@ -68,8 +68,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}")
     File basedir;
 
-    @Parameter(property = "client.graalHome")
-    String graalHome;
+    @Parameter(property = "client.graalvmHome")
+    String graalvmHome;
 
     @Parameter(property = "client.llcPath")
     String llcPath;
@@ -137,17 +137,17 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     ProjectConfiguration clientConfig;
 
     public void execute() throws MojoExecutionException {
-        if (!getGraalHome().isPresent()) {
-            throw new MojoExecutionException("Graal installation directory not found." +
-                    " Either set GRAAL_HOME as an environment variable or" +
-                    " set graalHome in client-plugin configuration");
+        if (!getGraalvmHome().isPresent()) {
+            throw new MojoExecutionException("GraalVM installation directory not found." +
+                    " Either set GRAALVM_HOME as an environment variable or" +
+                    " set graalvmHome in client-plugin configuration");
         }
         configSubstrate();
     }
 
     private void configSubstrate() {
         clientConfig = new ProjectConfiguration();
-        clientConfig.setGraalPath(getGraalHome().get());
+        clientConfig.setGraalPath(getGraalvmHome().get());
         clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
 
@@ -234,11 +234,11 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         return new ArrayList<>();
     }
     
-    private Optional<String> getGraalHome() {
-        if (graalHome != null) {
-            return Optional.of(graalHome);
-        } else if (System.getenv("GRAAL_HOME") != null) {
-            return Optional.of(System.getenv("GRAAL_HOME"));
+    private Optional<String> getGraalvmHome() {
+        if (graalvmHome != null) {
+            return Optional.of(graalvmHome);
+        } else if (System.getenv("GRAALVM_HOME") != null) {
+            return Optional.of(System.getenv("GRAALVM_HOME"));
         }
         return Optional.empty();
     }
