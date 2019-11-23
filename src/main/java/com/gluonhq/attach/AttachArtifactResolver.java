@@ -31,6 +31,7 @@
 package com.gluonhq.attach;
 
 import com.gluonhq.substrate.gluon.AttachResolver;
+import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
