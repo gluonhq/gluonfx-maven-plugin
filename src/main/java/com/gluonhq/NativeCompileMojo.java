@@ -61,7 +61,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
         String name = project.getName();
         getLog().debug("mcn = "+mainClassName+" and name = "+name);
 
-        List<File> classPath = getCompileClasspathElements(project);
+        List<File> classPath = getClasspathElements(project);
         getLog().debug("classPath = " + classPath);
 
         String cp0 = classPath.stream()

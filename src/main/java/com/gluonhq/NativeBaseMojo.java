@@ -34,6 +34,7 @@ import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.model.ProjectConfiguration;
 import com.gluonhq.substrate.model.Triplet;
+import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
@@ -44,6 +45,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +54,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
 
@@ -191,7 +195,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setMainClassName(mainClass);
         clientConfig.setAppName(project.getName());
 
-        List<File> classPath = getCompileClasspathElements(project);
+        List<File> classPath = getClasspathElements(project);
         clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
 
         clientConfig.setLlcPath(llcPath);
@@ -207,7 +211,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         return processDestroyer;
     }
 
-    List<File> getCompileClasspathElements(MavenProject project) {
+    List<File> getClasspathElements(MavenProject project) {
         List<File> list = project.getArtifacts().stream()
                 .sorted((a1, a2) -> {
                     int compare = a1.compareTo(a2);
@@ -220,6 +224,11 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .map(Artifact::getFile)
                 .collect(Collectors.toList());
         list.add(0, new File(project.getBuild().getOutputDirectory()));
+
+        getRuntimeDependencies().stream()
+                .filter(d -> !list.contains(d))
+                .forEach(list::add);
+
         return list;
     }
 
@@ -233,7 +242,25 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         }
         return new ArrayList<>();
     }
-    
+
+    private List<File> getRuntimeDependencies() {
+        final MavenArtifactResolver resolver = new MavenArtifactResolver(project.getRepositories());
+        return project.getDependencies().stream()
+                .filter(d -> "runtime".equals(d.getScope()))
+                .map(d -> new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
+                        d.getClassifier(), d.getType(), d.getVersion()))
+                .flatMap(a -> {
+                    Set<Artifact> resolve = resolver.resolve(a);
+                    if (resolve == null) {
+                        return Stream.empty();
+                    }
+                    return resolve.stream();
+                })
+                .distinct()
+                .map(Artifact::getFile)
+                .collect(Collectors.toList());
+    }
+
     private Optional<String> getGraalvmHome() {
         if (graalvmHome != null) {
             return Optional.of(graalvmHome);
