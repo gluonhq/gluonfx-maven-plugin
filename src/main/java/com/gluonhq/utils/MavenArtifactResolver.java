@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.gluonhq.attach;
+package com.gluonhq.utils;
 
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.model.Repository;
@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class MavenArtifactResolver {
+public class MavenArtifactResolver {
 
     private static String DEFAULT_LOCAL_REPO = org.apache.maven.repository.RepositorySystem.
             defaultUserLocalRepository.getAbsolutePath();
@@ -71,7 +71,7 @@ class MavenArtifactResolver {
     private final RepositorySystem repositorySystem;
     private final List<RemoteRepository> remoteRepositories;
 
-    MavenArtifactResolver(List<Repository> repositories) {
+    public MavenArtifactResolver(List<Repository> repositories) {
         this.repositorySystem = createRepositorySystem();
         this.remoteRepositories = new LinkedList<>();
         repositories.forEach(r -> {
@@ -103,7 +103,7 @@ class MavenArtifactResolver {
         return systemSession;
     }
 
-    Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
+    public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
         RepositorySystemSession systemSession = createRepositorySystemSession(this.repositorySystem, DEFAULT_LOCAL_REPO);
 
         ArtifactResult resolvedArtifact;
