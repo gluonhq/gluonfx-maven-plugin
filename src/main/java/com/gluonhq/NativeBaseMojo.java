@@ -78,7 +78,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.llcPath")
     String llcPath;
 
-    @Parameter(property = "client.javaStaticSdkVersion", defaultValue = "14-ea+2")
+    @Parameter(property = "client.javaStaticSdkVersion")
     String javaStaticSdkVersion;
 
     @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "14-ea+gvm1")
@@ -152,7 +152,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private void configSubstrate() {
         clientConfig = new ProjectConfiguration();
         clientConfig.setGraalPath(getGraalvmHome().get());
-        clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
+        if (javaStaticSdkVersion != null) {
+            clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
+        }
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
 
         String osname = System.getProperty("os.name", "Mac OS X").toLowerCase(Locale.ROOT);
@@ -167,14 +169,17 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
         Triplet targetTriplet = null;
         switch (target) {
-            case Constants.TARGET_HOST:
+            case Constants.PROFILE_HOST:
                 targetTriplet = hostTriplet;
                 break;
-            case Constants.TARGET_IOS:
+            case Constants.PROFILE_IOS:
                 targetTriplet = new Triplet(Constants.Profile.IOS);
                 break;
-            case Constants.TARGET_IOS_SIM:
+            case Constants.PROFILE_IOS_SIM:
                 targetTriplet = new Triplet(Constants.Profile.IOS_SIM);
+                break;
+            case Constants.PROFILE_ANDROID:
+                targetTriplet = new Triplet(Constants.Profile.ANDROID);
                 break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
