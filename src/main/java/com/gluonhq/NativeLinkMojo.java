@@ -50,7 +50,8 @@ public class NativeLinkMojo extends NativeBaseMojo {
             Path tmpPath = client.resolve("gvm").resolve("tmp");
             getLog().debug("Start linking in " + tmpPath.toString());
 
-            SubstrateDispatcher.nativeLink(client, clientConfig);
+            SubstrateDispatcher dispatcher = new SubstrateDispatcher(client, clientConfig);
+            dispatcher.nativeLink();
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);

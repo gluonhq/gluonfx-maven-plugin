@@ -46,7 +46,8 @@ public class NativeRunMojo extends NativeBaseMojo {
             Path client = outputDir.toPath();
             getLog().debug("Start running in " + client.toString());
 
-            SubstrateDispatcher.nativeRun(client, clientConfig);
+            SubstrateDispatcher dispatcher = new SubstrateDispatcher(client, clientConfig);
+            dispatcher.nativeRun();
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
