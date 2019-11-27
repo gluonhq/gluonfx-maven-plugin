@@ -75,7 +75,8 @@ public class NativeCompileMojo extends NativeBaseMojo {
         getLog().debug("cp = " + cp);
 
         try {
-            SubstrateDispatcher.nativeCompile(Paths.get(buildRoot), clientConfig, cp);
+            SubstrateDispatcher dispatcher = new SubstrateDispatcher(Paths.get(buildRoot), clientConfig);
+            dispatcher.nativeCompile(cp);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
