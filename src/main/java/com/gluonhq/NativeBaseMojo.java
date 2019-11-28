@@ -135,6 +135,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.attachVersion", defaultValue = "4.0.2")
     String attachVersion;
 
+    @Parameter(property = "client.javafxStaticSDK")
+    String javafxStaticSDK;
+
 
     private ProcessDestroyer processDestroyer;
 
@@ -207,6 +210,10 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
         clientConfig.setUseJNI("true".equals(useJNI));
         clientConfig.setVerbose("true".equals(verbose));
+
+        if (javafxStaticSDK != null) {
+            clientConfig.setJavaFXStaticSDK(javafxStaticSDK);
+        }
     }
 
     ProcessDestroyer getProcessDestroyer() {
