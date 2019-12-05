@@ -32,7 +32,7 @@ package com.gluonhq;
 
 import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
-import com.gluonhq.substrate.model.ProjectConfiguration;
+import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
@@ -48,6 +48,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -75,9 +76,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.graalvmHome")
     String graalvmHome;
 
-    @Parameter(property = "client.llcPath")
-    String llcPath;
-
     @Parameter(property = "client.javaStaticSdkVersion")
     String javaStaticSdkVersion;
 
@@ -86,9 +84,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.target", defaultValue = "host")
     String target;
-
-    @Parameter(property = "client.backend")
-    String backend;
 
     @Parameter(property = "client.bundlesList")
     List<String> bundlesList;
@@ -102,15 +97,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.jniList")
     List<String> jniList;
 
-    @Parameter(property = "client.delayInitList")
-    List<String> delayInitList;
-
-    @Parameter(property = "client.runtimeArgsList")
-    List<String> runtimeArgsList;
-
-    @Parameter(property = "client.releaseSymbolsList")
-    List<String> releaseSymbolsList;
-
     @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
     File outputDir;
 
@@ -119,12 +105,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.executable", defaultValue = "java")
     String executable;
-
-    @Parameter(property = "client.enableCheckHash", defaultValue = "true")
-    String enableCheckHash;
-
-    @Parameter(property = "client.useJNI", defaultValue = "true")
-    String useJNI;
 
     @Parameter(property = "client.verbose", defaultValue = "false")
     String verbose;
@@ -150,8 +130,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private void configSubstrate() {
-        clientConfig = new ProjectConfiguration();
-        clientConfig.setGraalPath(getGraalvmHome().get());
+        clientConfig = new ProjectConfiguration(mainClass);
+        clientConfig.setGraalPath(Path.of(getGraalvmHome().get()));
         if (javaStaticSdkVersion != null) {
             clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         }
@@ -186,26 +166,11 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         }
         clientConfig.setTarget(targetTriplet);
 
-        if (backend != null && ! backend.isEmpty()) {
-            clientConfig.setBackend(backend.toLowerCase(Locale.ROOT));
-        }
         clientConfig.setBundlesList(bundlesList);
         clientConfig.setResourcesList(resourcesList);
-        clientConfig.setDelayInitList(delayInitList);
         clientConfig.setJniList(jniList);
         clientConfig.setReflectionList(reflectionList);
-        clientConfig.setRuntimeArgsList(runtimeArgsList);
-        clientConfig.setReleaseSymbolsList(releaseSymbolsList);
-
-        clientConfig.setMainClassName(mainClass);
         clientConfig.setAppName(project.getName());
-
-        List<File> classPath = getClasspathElements(project);
-        clientConfig.setUseJavaFX(classPath.stream().anyMatch(f -> f.getName().contains("javafx")));
-
-        clientConfig.setLlcPath(llcPath);
-        clientConfig.setEnableCheckHash("true".equals(enableCheckHash));
-        clientConfig.setUseJNI("true".equals(useJNI));
         clientConfig.setVerbose("true".equals(verbose));
     }
 
@@ -216,7 +181,15 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         return processDestroyer;
     }
 
-    List<File> getClasspathElements(MavenProject project) {
+    String getProjectClasspath() {
+        List<File> classPath = getClasspathElements(project);
+        getLog().debug("classPath = " + classPath);
+        return classPath.stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.joining(File.pathSeparator));
+    }
+
+    private List<File> getClasspathElements(MavenProject project) {
         List<File> list = project.getArtifacts().stream()
                 .sorted((a1, a2) -> {
                     int compare = a1.compareTo(a2);

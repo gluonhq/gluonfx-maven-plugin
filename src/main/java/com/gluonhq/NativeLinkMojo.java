@@ -51,7 +51,7 @@ public class NativeLinkMojo extends NativeBaseMojo {
             getLog().debug("Start linking in " + tmpPath.toString());
 
             SubstrateDispatcher dispatcher = new SubstrateDispatcher(client, clientConfig);
-            dispatcher.nativeLink();
+            dispatcher.nativeLink(getProjectClasspath());
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
