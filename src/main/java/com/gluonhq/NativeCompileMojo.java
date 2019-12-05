@@ -61,22 +61,12 @@ public class NativeCompileMojo extends NativeBaseMojo {
         String name = project.getName();
         getLog().debug("mcn = "+mainClassName+" and name = "+name);
 
-        List<File> classPath = getClasspathElements(project);
-        getLog().debug("classPath = " + classPath);
-
-        String cp0 = classPath.stream()
-                .map(File::getAbsolutePath)
-                .collect(Collectors.joining(File.pathSeparator));
-
         String buildRoot = outputDir.toPath().toString();
         getLog().debug("BuildRoot: " + buildRoot);
 
-        String cp = cp0 + File.pathSeparator;
-        getLog().debug("cp = " + cp);
-
         try {
             SubstrateDispatcher dispatcher = new SubstrateDispatcher(Paths.get(buildRoot), clientConfig);
-            dispatcher.nativeCompile(cp);
+            dispatcher.nativeCompile(getProjectClasspath());
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
