@@ -16,4 +16,4 @@ git commit pom.xml -m "Prepare development of $newVersion" --author "Gluon Bot <
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:master
 
 # Update samples
-sh update-samples.sh "$newVersion"
+sh .ci/update-samples.sh "$newVersion"
