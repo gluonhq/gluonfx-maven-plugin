@@ -13,4 +13,7 @@ mvn versions:set -DnewVersion=$newVersion-SNAPSHOT -DgenerateBackupPoms=false
 mvn versions:use-next-snapshots -Dincludes=com.gluonhq:substrate -DgenerateBackupPoms=false
 
 git commit pom.xml -m "Prepare development of $newVersion" --author "Gluon Bot <githubbot@gluonhq.com>"
-git push https://gluon-bot:$GITHUB_PASSWORD@github.com/gluonhq/client-maven-plugin HEAD:master
+git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:master
+
+# Update samples
+sh update-samples.sh "$newVersion"
