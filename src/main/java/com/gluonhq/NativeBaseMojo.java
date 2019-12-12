@@ -103,6 +103,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.mainClass", required = true)
     String mainClass;
 
+    @Parameter(property = "client.compilerArgs", defaultValue = "")
+    String compilerArgs;
+
     @Parameter(property = "client.executable", defaultValue = "java")
     String executable;
 
@@ -166,6 +169,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         }
         clientConfig.setTarget(targetTriplet);
 
+        clientConfig.setCompilerArgs(compilerArgs);
         clientConfig.setBundlesList(bundlesList);
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
