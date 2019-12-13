@@ -78,7 +78,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.javaStaticSdkVersion")
     String javaStaticSdkVersion;
 
-    @Parameter(property = "client.javafxStaticSdkVersion", defaultValue = "14-ea+gvm1")
+    @Parameter(property = "client.javafxStaticSdkVersion")
     String javafxStaticSdkVersion;
 
     @Parameter(property = "client.target", defaultValue = "host")
@@ -134,7 +134,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         if (javaStaticSdkVersion != null) {
             clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         }
-        clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
+        if (javafxStaticSdkVersion != null) {
+            clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
+        }
 
         Triplet targetTriplet;
         switch (target) {
