@@ -8,6 +8,12 @@ sudo: false
 # use linux as operating system
 os: linux
 
+# Install xmlstarlet
+addons:
+  apt:
+    packages:
+      - xmlstarlet
+
 # Do not run travis install step `./gradlew assemble`
 install: true
 

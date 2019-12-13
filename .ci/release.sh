@@ -17,3 +17,6 @@ git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:ma
 
 # Update samples
 sh .ci/update-samples.sh "$newVersion"
+
+# Update archetypes
+bash .ci/update-archetypes.sh "$newVersion"
