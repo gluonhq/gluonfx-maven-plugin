@@ -96,6 +96,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.jniList")
     List<String> jniList;
 
+    @Parameter(property = "client.compilerArgs")
+    List<String> compilerArgs;
+
     @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
     File outputDir;
 
@@ -158,6 +161,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setBundlesList(bundlesList);
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
+        clientConfig.setCompilerArgs(compilerArgs);
         clientConfig.setReflectionList(reflectionList);
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
