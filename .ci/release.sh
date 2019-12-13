@@ -20,7 +20,7 @@ git commit pom.xml -m "Prepare development of v$newVersion" --author "Gluon Bot 
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:master
 
 # Update samples
-sh .ci/update-samples.sh "$newVersion"
+sh .ci/update-samples.sh "$TRAVIS_TAG"
 
 # Update archetypes
-bash .ci/update-archetypes.sh "$newVersion"
+bash .ci/update-archetypes.sh "$TRAVIS_TAG"
