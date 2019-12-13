@@ -51,7 +51,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -137,20 +136,10 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         }
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
 
-        String osname = System.getProperty("os.name", "Mac OS X").toLowerCase(Locale.ROOT);
-        Triplet hostTriplet;
-        if (osname.contains("mac")) {
-            hostTriplet = new Triplet(Constants.Profile.MACOS);
-        } else if (osname.contains("nux")) {
-            hostTriplet = new Triplet(Constants.Profile.LINUX);
-        } else {
-            throw new RuntimeException("OS " + osname + " not supported");
-        }
-
-        Triplet targetTriplet = null;
+        Triplet targetTriplet;
         switch (target) {
             case Constants.PROFILE_HOST:
-                targetTriplet = hostTriplet;
+                targetTriplet = Triplet.fromCurrentOS();
                 break;
             case Constants.PROFILE_IOS:
                 targetTriplet = new Triplet(Constants.Profile.IOS);
