@@ -131,12 +131,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private void configSubstrate() {
         clientConfig = new ProjectConfiguration(mainClass);
         clientConfig.setGraalPath(Path.of(getGraalvmHome().get()));
-        if (javaStaticSdkVersion != null) {
-            clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
-        }
-        if (javafxStaticSdkVersion != null) {
-            clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
-        }
+        clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
+        clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
 
         Triplet targetTriplet;
         switch (target) {
