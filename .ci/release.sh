@@ -8,7 +8,7 @@ newVersion=${TRAVIS_TAG%.*}.$((${TRAVIS_TAG##*.} + 1))
 
 # Update README with the latest released version
 sed -i "0,/<version>.*<\/version>/s//<version>$TRAVIS_TAG<\/version>/" README.md
-git commit README.md -m "Use latest release v$TRAVIS_TAG in README" --author "Github Bot <githubbot@gluonhq.com>"
+git commit README.md -m "Use latest release v$TRAVIS_TAG in README" --author "Gluon Bot <githubbot@gluonhq.com>"
 
 # Update project version to next snapshot version
 mvn versions:set -DnewVersion=$newVersion-SNAPSHOT -DgenerateBackupPoms=false
