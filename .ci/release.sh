@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Update substrate to release version
+mvn versions:use-releases -Dincludes=com.gluonhq:substrate -DgenerateBackupPoms=false
+
 # Release artifacts
 cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy
 
