@@ -114,7 +114,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.attachList")
     List<String> attachList;
 
-    @Parameter(property = "client.attachVersion", defaultValue = "4.0.2")
+    @Parameter(property = "client.attachVersion", defaultValue = "4.0.3")
     String attachVersion;
 
 

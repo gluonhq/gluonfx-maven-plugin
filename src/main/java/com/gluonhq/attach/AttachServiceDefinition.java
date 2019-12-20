@@ -31,7 +31,6 @@
 package com.gluonhq.attach;
 
 import com.gluonhq.substrate.Constants;
-import com.gluonhq.substrate.gluon.AttachService;
 
 import java.util.Locale;
 import java.util.stream.Collectors;
