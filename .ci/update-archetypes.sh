@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-export ARCHETYPE_REPO_SLUG=gluonhq/client-maven-archetypes
-export XML_LOCATION=src/main/resources/META-INF/maven/archetype-metadata.xml
+ARCHETYPE_REPO_SLUG=gluonhq/client-maven-archetypes
+XML_LOCATION=src/main/resources/META-INF/maven/archetype-metadata.xml
 
 cd $TRAVIS_BUILD_DIR
 git clone https://github.com/$ARCHETYPE_REPO_SLUG
@@ -16,5 +16,5 @@ for f in ./client-archetype-* ; do
   fi
 done
 
-git -c user.name="Gluon Bot" -c user.email="githubbot@gluonhq.com" commit */$XML_LOCATION -m "Upgrade client-maven-plugin version to $1"
+git commit */$XML_LOCATION -m "Update client-maven-plugin version to $1"
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$ARCHETYPE_REPO_SLUG HEAD:master

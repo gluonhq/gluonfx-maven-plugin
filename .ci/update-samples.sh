@@ -1,4 +1,4 @@
-export SAMPLES_REPO_SLUG=gluonhq/client-samples
+SAMPLES_REPO_SLUG=gluonhq/client-samples
 
 cd $TRAVIS_BUILD_DIR
 git clone https://github.com/$SAMPLES_REPO_SLUG
@@ -10,5 +10,5 @@ mvn -f HelloFXML versions:set-property -Dproperty=client.plugin.version -DnewVer
 mvn -f HelloGluon versions:set-property -Dproperty=client.plugin.version -DnewVersion="$1" -DgenerateBackupPoms=false
 mvn -f HelloWorld versions:set-property -Dproperty=client.plugin.version -DnewVersion="$1" -DgenerateBackupPoms=false
 
-git -c user.name="Gluon Bot" -c user.email="githubbot@gluonhq.com" commit */pom.xml -m "Upgrade client-maven-plugin version to $1"
+git commit */pom.xml -m "Update client-maven-plugin version to $1"
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$SAMPLES_REPO_SLUG HEAD:master
