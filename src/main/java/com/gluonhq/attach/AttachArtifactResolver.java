@@ -30,7 +30,6 @@
 
 package com.gluonhq.attach;
 
-import com.gluonhq.substrate.gluon.AttachResolver;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
@@ -45,11 +44,14 @@ import java.util.stream.Stream;
 
 public class AttachArtifactResolver {
 
+    private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
+    private static final String UTIL_ARTIFACT = "util";
+
     public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target, String attachVersion) {
         final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
         return dependencies.stream()
-                .filter(d -> AttachResolver.DEPENDENCY_GROUP.equals(d.getGroupId()) &&
-                        ! AttachResolver.UTIL_ARTIFACT.equals(d.getArtifactId()))
+                .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()) &&
+                        ! UTIL_ARTIFACT.equals(d.getArtifactId()))
                 .map(d -> {
                     AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
                     return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
