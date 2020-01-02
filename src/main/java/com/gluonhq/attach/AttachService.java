@@ -66,7 +66,7 @@ public enum AttachService {
     VIBRATION,
     VIDEO;
 
-    private boolean androidSupported = false;
+    private boolean androidSupported = true;
     private boolean iosSupported = true;
     private boolean desktopSupported = false;
 
