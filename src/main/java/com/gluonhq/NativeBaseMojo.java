@@ -114,10 +114,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.attachList")
     List<String> attachList;
 
-    @Parameter(property = "client.attachVersion", defaultValue = "4.0.3")
-    String attachVersion;
-
-
     private ProcessDestroyer processDestroyer;
 
     ProjectConfiguration clientConfig;
@@ -202,7 +198,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     List<Artifact> getAttachDependencies() {
-        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target, attachVersion);
+        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target);
         if (attachList != null) {
             return attachList.stream()
                 .map(attachMap::get)
