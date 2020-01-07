@@ -47,7 +47,7 @@ public class AttachArtifactResolver {
     private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
     private static final String UTIL_ARTIFACT = "util";
 
-    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target, String attachVersion) {
+    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target) {
         final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
         return dependencies.stream()
                 .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()) &&
@@ -55,7 +55,7 @@ public class AttachArtifactResolver {
                 .map(d -> {
                     AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
                     return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
-                            asd.getSupportedPlatform(target), d.getType(), attachVersion);
+                            asd.getSupportedPlatform(target), d.getType(), d.getVersion());
                 })
                 .flatMap(a -> {
                     Set<Artifact> resolve = resolver.resolve(a);
