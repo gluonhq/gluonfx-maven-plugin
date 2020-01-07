@@ -80,6 +80,16 @@ Or run directly the application from command line:
     
 It will create a distributable native application.
 
+#### `client:package`
+
+Create a package of the executable in the target platform.
+
+Run:
+
+    mvn client:package
+    
+For instance, on iOS, this can be used to create an IPA.
+
 ## Requirements
 
 At this moment the plugin is in beta, and supports Linux, Mac OS X and iOS platforms for now.
