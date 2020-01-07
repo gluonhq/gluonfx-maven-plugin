@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2020, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ package com.gluonhq;
 import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
+import com.gluonhq.substrate.model.IosSigningConfiguration;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
@@ -114,6 +115,15 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.attachList")
     List<String> attachList;
 
+    @Parameter(property = "client.IOSSigningIdentity")
+    String IOSSigningIdentity;
+
+    @Parameter(property = "client.IOSProvisioningProfile")
+    String IOSProvisioningProfile;
+
+    @Parameter(property = "client.IOSSkipSigning")
+    String IOSSkipSigning;
+
     private ProcessDestroyer processDestroyer;
 
     ProjectConfiguration clientConfig;
@@ -140,6 +150,11 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 break;
             case Constants.PROFILE_IOS:
                 targetTriplet = new Triplet(Constants.Profile.IOS);
+                IosSigningConfiguration signingConfiguration = new IosSigningConfiguration();
+                signingConfiguration.setProvidedSigningIdentity(IOSSigningIdentity);
+                signingConfiguration.setProvidedProvisioningProfile(IOSProvisioningProfile);
+                signingConfiguration.setSkipSigning(IOSSkipSigning != null && "true".equals(IOSSkipSigning));
+                clientConfig.setIosSigningConfiguration(signingConfiguration);
                 break;
             case Constants.PROFILE_IOS_SIM:
                 targetTriplet = new Triplet(Constants.Profile.IOS_SIM);
