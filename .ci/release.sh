@@ -7,11 +7,6 @@ set -e
 git config --global user.name "Gluon Bot"
 git config --global user.email "githubbot@gluonhq.com"
 
-# Update substrate to release version
-mvn versions:use-releases -Dincludes=com.gluonhq:substrate -DgenerateBackupPoms=false
-substrateReleaseVersion=$(xmlstarlet sel -t -v "//_:dependency[_:artifactId='substrate']/_:version" pom.xml)
-git commit pom.xml -m "Update Substrate version to $substrateReleaseVersion"
-
 # Release artifacts
 cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy
 
