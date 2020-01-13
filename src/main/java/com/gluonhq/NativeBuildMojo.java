@@ -29,6 +29,7 @@
  */
 package com.gluonhq;
 
+import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -43,6 +44,7 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 
 @Mojo(name = "build", defaultPhase = LifecyclePhase.COMPILE,
@@ -58,13 +60,20 @@ public class NativeBuildMojo extends NativeBaseMojo {
 
         // prepare the execution:
         final InvocationRequest invocationRequest = new DefaultInvocationRequest();
+        invocationRequest.setProfiles(project.getActiveProfiles().stream()
+                .map(Profile::getId)
+                .collect(Collectors.toList()));
         invocationRequest.setPomFile(new File(pom));
+
         invocationRequest.setGoals(Arrays.asList("client:compile", "client:link"));
 
         final Invoker invoker = new DefaultInvoker();
         // execute:
         try {
             final InvocationResult invocationResult = invoker.execute(invocationRequest);
+            if (invocationResult.getExitCode() != 0) {
+                throw new MojoExecutionException("Error, client:build failed", invocationResult.getExecutionException());
+            }
         } catch (MavenInvocationException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
