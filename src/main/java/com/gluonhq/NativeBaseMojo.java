@@ -172,6 +172,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setJniList(jniList);
         clientConfig.setCompilerArgs(nativeImageArgs);
         clientConfig.setReflectionList(reflectionList);
+        clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
     }
