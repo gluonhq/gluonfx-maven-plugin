@@ -161,6 +161,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 break;
             case Constants.PROFILE_ANDROID:
                 targetTriplet = new Triplet(Constants.Profile.ANDROID);
+            case Constants.PROFILE_LINUX_AARCH64:
+                targetTriplet = new Triplet(Constants.Profile.LINUX_AARCH64);
                 break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
