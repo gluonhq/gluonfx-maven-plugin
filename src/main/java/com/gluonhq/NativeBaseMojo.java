@@ -115,6 +115,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.attachList")
     List<String> attachList;
 
+    @Parameter(property = "client.enableSWRendering", defaultValue = "false")
+    String enableSWRendering;
+
     @Parameter(property = "client.IOSSigningIdentity")
     String IOSSigningIdentity;
 
@@ -178,6 +181,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
+        clientConfig.setUsePrismSW("true".equals(enableSWRendering));
     }
 
     ProcessDestroyer getProcessDestroyer() {
