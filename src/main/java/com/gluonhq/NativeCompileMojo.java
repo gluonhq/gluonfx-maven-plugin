@@ -66,7 +66,10 @@ public class NativeCompileMojo extends NativeBaseMojo {
 
         try {
             SubstrateDispatcher dispatcher = new SubstrateDispatcher(Paths.get(buildRoot), clientConfig);
-            dispatcher.nativeCompile(getProjectClasspath());
+            boolean result = dispatcher.nativeCompile(getProjectClasspath());
+            if (!result) {
+                throw new MojoExecutionException("Compilation failed");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
