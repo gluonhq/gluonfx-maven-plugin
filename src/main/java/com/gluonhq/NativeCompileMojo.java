@@ -33,6 +33,7 @@ package com.gluonhq;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE)
+@Execute(phase = LifecyclePhase.PROCESS_CLASSES)
 public class NativeCompileMojo extends NativeBaseMojo {
 
     public void execute() throws MojoExecutionException {
@@ -52,9 +54,6 @@ public class NativeCompileMojo extends NativeBaseMojo {
         // Attach
         List<Artifact> attachDependencies = getAttachDependencies();
         project.getArtifacts().addAll(attachDependencies);
-
-        // Compile
-        Compile.compile(project, session, pluginManager);
 
         // Native Compile
         String mainClassName = mainClass;
