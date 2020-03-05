@@ -213,9 +213,15 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .collect(Collectors.toList());
         list.add(0, new File(project.getBuild().getOutputDirectory()));
 
+        // include runtime dependencies
         getRuntimeDependencies().stream()
                 .filter(d -> !list.contains(d))
                 .forEach(list::add);
+
+        // remove provided dependencies
+        getProvidedDependencies().stream()
+                .filter(list::contains)
+                .forEach(list::remove);
 
         return list;
     }
@@ -232,9 +238,21 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getRuntimeDependencies() {
+        return getDependencies("runtime");
+    }
+
+    private List<File> getProvidedDependencies() {
+        return getDependencies("provided");
+    }
+
+    private List<File> getDependencies(String scope) {
+        if (scope == null || scope.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         final MavenArtifactResolver resolver = new MavenArtifactResolver(project.getRepositories());
         return project.getDependencies().stream()
-                .filter(d -> "runtime".equals(d.getScope()))
+                .filter(d -> scope.equals(d.getScope()))
                 .map(d -> new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
                         d.getClassifier(), d.getType(), d.getVersion()))
                 .flatMap(a -> {
