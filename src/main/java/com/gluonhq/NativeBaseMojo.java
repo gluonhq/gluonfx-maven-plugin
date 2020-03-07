@@ -31,6 +31,7 @@
 package com.gluonhq;
 
 import com.gluonhq.attach.AttachArtifactResolver;
+import com.gluonhq.attach.AttachService;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.model.IosSigningConfiguration;
@@ -52,8 +53,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,6 +115,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.attachList")
     List<String> attachList;
+
+    @Parameter(property = "client.attachServices")
+    List<AttachService> attachServices;
 
     @Parameter(property = "client.enableSWRendering", defaultValue = "false")
     String enableSWRendering;
@@ -227,14 +231,48 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     List<Artifact> getAttachDependencies() {
-        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target);
+        List<AttachService> attachServices = getAttachServices();
+
+        Map<String, Artifact> attachMap =
+                AttachArtifactResolver.findArtifactsForTarget(
+                        attachServices, project.getDependencies(), project.getRepositories(), target);
+
         if (attachList != null) {
+
             return attachList.stream()
-                .map(attachMap::get)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                    .map(serviceName -> {
+                        Artifact artifact = attachMap.get(serviceName);
+
+                        if (artifact == null) {
+                            String services = String.join(", ", attachMap.keySet());
+
+                            throw new RuntimeException("Invalid name for Attach service: " + serviceName +
+                                    " from list of services: " + services);
+                        }
+
+                        return artifact;
+                    })
+                    .collect(Collectors.toList());
         }
+
         return new ArrayList<>();
+    }
+
+    private List<AttachService> getAttachServices() {
+        List<AttachService> attachServices = new LinkedList<>(this.attachServices);
+        attachServices.addAll(AttachService.GLUON_ATTACH_MODULES);
+
+        attachServices.stream()
+                .filter(current -> attachServices.stream()
+                        .anyMatch(other ->
+                                current != other && current.getServiceName().equals(other.getServiceName())))
+                .findAny()
+                .ifPresent(attachService -> {
+                    throw new RuntimeException("Found duplicate Attach service name for '"
+                            + attachService.getServiceName() + "'");
+                });
+
+        return attachServices;
     }
 
     private List<File> getRuntimeDependencies() {

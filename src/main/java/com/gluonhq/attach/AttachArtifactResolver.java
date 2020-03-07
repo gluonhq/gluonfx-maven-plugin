@@ -31,6 +31,7 @@
 package com.gluonhq.attach;
 
 import com.gluonhq.utils.MavenArtifactResolver;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
@@ -44,18 +45,29 @@ import java.util.stream.Stream;
 
 public class AttachArtifactResolver {
 
-    private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
-    private static final String UTIL_ARTIFACT = "util";
+    public static Map<String, Artifact> findArtifactsForTarget(List<AttachService> attachServices,
+                                                               List<Dependency> dependencies,
+                                                               List<Repository> repositories, String target) {
 
-    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target) {
         final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
-        return dependencies.stream()
-                .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()) &&
-                        ! UTIL_ARTIFACT.equals(d.getArtifactId()))
-                .map(d -> {
-                    AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
-                    return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
-                            asd.getSupportedPlatform(target), d.getType(), d.getVersion());
+
+        Map<Pair<String, String>, Dependency> dependencyArtifacts =
+                mapDependencyArtifacts(dependencies);
+
+        return attachServices.stream()
+                .filter(attachService -> dependencyArtifacts.containsKey(
+                        Pair.of(attachService.getGroupId(), attachService.getArtifactId())))
+                .map(attachService -> {
+                    String groupId = attachService.getGroupId();
+                    String artifactId = attachService.getArtifactId();
+
+                    Dependency dependency = dependencyArtifacts.get(Pair.of(groupId, artifactId));
+                    AttachServiceDefinition attachServiceDefinition = new AttachServiceDefinition(attachService);
+
+                    return new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                            attachServiceDefinition.getSupportedPlatform(target),
+                            dependency.getType(), dependency.getVersion());
+
                 })
                 .flatMap(a -> {
                     Set<Artifact> resolve = resolver.resolve(a);
@@ -66,5 +78,12 @@ public class AttachArtifactResolver {
                 })
                 .distinct()
                 .collect(Collectors.toMap(Artifact::getArtifactId, a -> a));
+    }
+
+    private static Map<Pair<String, String>, Dependency> mapDependencyArtifacts(List<Dependency> dependencies) {
+        return dependencies.stream().collect(
+                Collectors.toMap(
+                        dependency -> Pair.of(dependency.getGroupId(), dependency.getArtifactId()),
+                        dependency -> dependency));
     }
 }

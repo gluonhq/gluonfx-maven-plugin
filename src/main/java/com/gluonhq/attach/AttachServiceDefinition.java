@@ -32,42 +32,25 @@ package com.gluonhq.attach;
 
 import com.gluonhq.substrate.Constants;
 
-import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class AttachServiceDefinition {
 
-    private String name;
-    private AttachService service;
+    private final AttachService service;
 
-    AttachServiceDefinition(String name) {
-        this.name = name;
-
-        try {
-            this.service = AttachService.valueOf(name.replace('-', '_').toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            String services = Stream.of(AttachService.values())
-                    .map(AttachService::getServiceName)
-                    .collect(Collectors.joining(", "));
-            throw new RuntimeException("Invalid name for Attach service: " + name +
-                    " from list of services: " + services, e);
-        }
-    }
-
-    AttachService getService() {
-        return service;
+    AttachServiceDefinition(AttachService attachService) {
+        this.service = attachService;
     }
 
     String getSupportedPlatform(String target) {
         switch (target) {
             case Constants.TARGET_HOST:
-                return getService().isDesktopSupported() ? "desktop" : "";
+                return service.isDesktopSupported() ? "desktop" : "";
+
             case Constants.TARGET_IOS:
             case Constants.TARGET_IOS_SIM:
-                return getService().isIosSupported() ? "ios" : "";
+                return service.isIosSupported() ? "ios" : "";
+
             case Constants.PROFILE_ANDROID:
-                return getService().isAndroidSupported() ? "android" : "";
+                return service.isAndroidSupported() ? "android" : "";
             default:
                 throw new RuntimeException("No valid target found for " + target);
         }
@@ -80,13 +63,11 @@ public class AttachServiceDefinition {
 
         AttachServiceDefinition that = (AttachServiceDefinition) o;
 
-        return name.equals(that.name);
-
+        return service.getServiceName().equals(that.service.getServiceName());
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return service.getServiceName().hashCode();
     }
-
 }
