@@ -31,6 +31,7 @@
 package com.gluonhq;
 
 import com.gluonhq.attach.AttachArtifactResolver;
+import com.gluonhq.parameter.TargetLinkFlagParameter;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.model.IosSigningConfiguration;
@@ -99,6 +100,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.nativeImageArgs")
     List<String> nativeImageArgs;
+
+    @Parameter(property = "client.linkFlags")
+    Map<String, TargetLinkFlagParameter> linkFlags;
 
     @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
     File outputDir;
@@ -177,6 +181,13 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
         clientConfig.setCompilerArgs(nativeImageArgs);
+
+        clientConfig.setLinkFlags(linkFlags.keySet().stream()
+                .collect(Collectors.toMap(
+                        key -> key,
+                        key -> linkFlags.get(key).getFlags()
+                )));
+
         clientConfig.setReflectionList(reflectionList);
         clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
