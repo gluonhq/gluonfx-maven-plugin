@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2020, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,15 @@ package com.gluonhq;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import java.nio.file.Path;
-
-@Mojo(name = "run")
+@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class NativeRunMojo extends NativeBaseMojo {
 
+    @Override
     public void execute() throws MojoExecutionException {
-        super.execute();
-
         try {
-            Path client = outputDir.toPath();
-            getLog().debug("Start running in " + client.toString());
-
-            SubstrateDispatcher dispatcher = new SubstrateDispatcher(client, clientConfig);
+            SubstrateDispatcher dispatcher = createSubstrateDispatcher();
             dispatcher.nativeRun();
         } catch (Exception e) {
             e.printStackTrace();

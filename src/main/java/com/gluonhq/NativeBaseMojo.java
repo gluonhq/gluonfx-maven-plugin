@@ -33,6 +33,7 @@ package com.gluonhq;
 import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
+import com.gluonhq.substrate.SubstrateDispatcher;
 import com.gluonhq.substrate.model.IosSigningConfiguration;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.utils.MavenArtifactResolver;
@@ -49,6 +50,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,19 +131,19 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private ProcessDestroyer processDestroyer;
 
-    ProjectConfiguration clientConfig;
-
-    public void execute() throws MojoExecutionException {
+    public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
         if (!getGraalvmHome().isPresent()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
                     " set graalvmHome in client-plugin configuration");
         }
-        configSubstrate();
+        ProjectConfiguration substrateConfiguration = createSubstrateConfiguration();
+        return new SubstrateDispatcher(outputDir.toPath(), substrateConfiguration);
     }
 
-    private void configSubstrate() {
-        clientConfig = new ProjectConfiguration(mainClass);
+    private ProjectConfiguration createSubstrateConfiguration() {
+        ProjectConfiguration clientConfig = new ProjectConfiguration(mainClass, getProjectClasspath());
+
         clientConfig.setGraalPath(Path.of(getGraalvmHome().get()));
         clientConfig.setJavaStaticSdkVersion(javaStaticSdkVersion);
         clientConfig.setJavafxStaticSdkVersion(javafxStaticSdkVersion);
@@ -182,6 +184,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
         clientConfig.setUsePrismSW("true".equals(enableSWRendering));
+
+        return clientConfig;
     }
 
     ProcessDestroyer getProcessDestroyer() {

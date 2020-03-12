@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2020, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,40 +38,33 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE)
 @Execute(phase = LifecyclePhase.PROCESS_CLASSES)
 public class NativeCompileMojo extends NativeBaseMojo {
 
+    @Override
     public void execute() throws MojoExecutionException {
-        super.execute();
-
-        // Attach
         List<Artifact> attachDependencies = getAttachDependencies();
         project.getArtifacts().addAll(attachDependencies);
 
-        // Native Compile
-        String mainClassName = mainClass;
-        String name = project.getName();
-        getLog().debug("mcn = "+mainClassName+" and name = "+name);
+        getLog().debug("MainClassName = " + mainClass);
+        getLog().debug("ProjectName = " + project.getName());
+        getLog().debug("BuildRoot = " + outputDir.toPath());
 
-        String buildRoot = outputDir.toPath().toString();
-        getLog().debug("BuildRoot: " + buildRoot);
-
+        boolean result = true;
         try {
-            SubstrateDispatcher dispatcher = new SubstrateDispatcher(Paths.get(buildRoot), clientConfig);
-            boolean result = dispatcher.nativeCompile(getProjectClasspath());
-            if (!result) {
-                throw new MojoExecutionException("Compilation failed");
-            }
+            SubstrateDispatcher dispatcher = createSubstrateDispatcher();
+            result = dispatcher.nativeCompile();
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
+        }
+
+        if (!result) {
+            throw new MojoExecutionException("Compiling failed");
         }
     }
 }
