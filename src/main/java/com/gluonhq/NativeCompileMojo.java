@@ -31,14 +31,11 @@
 package com.gluonhq;
 
 import com.gluonhq.substrate.SubstrateDispatcher;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-
-import java.util.List;
 
 @Mojo(name = "compile", defaultPhase = LifecyclePhase.COMPILE,
         requiresDependencyResolution = ResolutionScope.COMPILE)
@@ -47,9 +44,6 @@ public class NativeCompileMojo extends NativeBaseMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        List<Artifact> attachDependencies = getAttachDependencies();
-        project.getArtifacts().addAll(attachDependencies);
-
         getLog().debug("MainClassName = " + mainClass);
         getLog().debug("ProjectName = " + project.getName());
         getLog().debug("BuildRoot = " + outputDir.toPath());
