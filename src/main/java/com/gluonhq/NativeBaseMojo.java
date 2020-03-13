@@ -195,7 +195,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         return processDestroyer;
     }
 
-    String getProjectClasspath() {
+    private String getProjectClasspath() {
         List<File> classPath = getClasspathElements(project);
         getLog().debug("classPath = " + classPath);
         return classPath.stream()
@@ -204,7 +204,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
-        List<File> list = project.getArtifacts().stream()
+        List<Artifact> attachDependencies = getAttachDependencies();
+        List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
                 .sorted((a1, a2) -> {
                     int compare = a1.compareTo(a2);
                     if (compare == 0) {
