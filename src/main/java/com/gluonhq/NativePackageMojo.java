@@ -32,21 +32,18 @@ package com.gluonhq;
 
 import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import java.nio.file.Path;
-
-@Mojo(name = "package")
+@Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE,
+        requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class NativePackageMojo extends NativeBaseMojo {
 
+    @Override
     public void execute() throws MojoExecutionException {
-        super.execute();
-
         try {
-            Path client = outputDir.toPath();
-            getLog().debug("Start packaging in " + client.toString());
-
-            SubstrateDispatcher dispatcher = new SubstrateDispatcher(client, clientConfig);
+            SubstrateDispatcher dispatcher = createSubstrateDispatcher();
             dispatcher.nativePackage();
         } catch (Exception e) {
             e.printStackTrace();
