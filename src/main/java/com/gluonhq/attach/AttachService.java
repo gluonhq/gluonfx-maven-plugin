@@ -51,6 +51,7 @@ public enum AttachService {
     DIALER,
     DISPLAY(true /* desktopSupported */),
     IN_APP_BILLING,
+    KEYBOARD,
     LIFECYCLE(true /* desktopSupported */),
     LOCAL_NOTIFICATIONS,
     MAGNETOMETER,
