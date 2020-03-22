@@ -30,6 +30,7 @@
 
 package com.gluonhq.attach;
 
+import com.gluonhq.substrate.Constants;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
@@ -45,14 +46,17 @@ import java.util.stream.Stream;
 public class AttachArtifactResolver {
 
     private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
-    private static final String UTIL_ARTIFACT = "util";
+    public static final String UTIL_ARTIFACT = "util";
 
     public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target) {
         final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
         return dependencies.stream()
-                .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()) &&
-                        ! UTIL_ARTIFACT.equals(d.getArtifactId()))
+                .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()))
                 .map(d -> {
+                    if (UTIL_ARTIFACT.equals(d.getArtifactId()) && Constants.PROFILE_ANDROID.equals(target)) {
+                        return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
+                                target, d.getType(), d.getVersion());
+                    }
                     AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
                     return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
                             asd.getSupportedPlatform(target), d.getType(), d.getVersion());
