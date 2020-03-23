@@ -61,6 +61,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.gluonhq.attach.AttachArtifactResolver.UTIL_ARTIFACT;
+
 public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true)
@@ -234,7 +236,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     List<Artifact> getAttachDependencies() {
         Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target);
         if (attachList != null) {
-            return attachList.stream()
+            return Stream.concat(attachList.stream(), Stream.of(UTIL_ARTIFACT))
+                .distinct()
                 .map(attachMap::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
