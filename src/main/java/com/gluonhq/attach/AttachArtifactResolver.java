@@ -39,6 +39,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,14 +54,17 @@ public class AttachArtifactResolver {
         return dependencies.stream()
                 .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()))
                 .map(d -> {
-                    if (UTIL_ARTIFACT.equals(d.getArtifactId()) && Constants.PROFILE_ANDROID.equals(target)) {
-                        return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
-                                target, d.getType(), d.getVersion());
+                    if (UTIL_ARTIFACT.equals(d.getArtifactId())) {
+                        return Constants.PROFILE_ANDROID.equals(target) ?
+                                new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
+                                        target, d.getType(), d.getVersion()) :
+                                null;
                     }
                     AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
                     return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
                             asd.getSupportedPlatform(target), d.getType(), d.getVersion());
                 })
+                .filter(Objects::nonNull)
                 .flatMap(a -> {
                     Set<Artifact> resolve = resolver.resolve(a);
                     if (resolve == null) {
