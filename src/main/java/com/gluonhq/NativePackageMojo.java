@@ -42,13 +42,17 @@ public class NativePackageMojo extends NativeBaseMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        boolean result = true;
         try {
             SubstrateDispatcher dispatcher = createSubstrateDispatcher();
-            dispatcher.nativePackage();
+            result = dispatcher.nativePackage();
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
         }
-    }
 
+        if (!result) {
+            throw new MojoExecutionException("Packaging failed");
+        }
+    }
 }
