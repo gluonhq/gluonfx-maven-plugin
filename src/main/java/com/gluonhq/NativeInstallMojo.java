@@ -40,13 +40,17 @@ public class NativeInstallMojo extends NativeBaseMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        boolean result = true;
         try {
             SubstrateDispatcher dispatcher = createSubstrateDispatcher();
-            dispatcher.nativeInstall();
+            result = dispatcher.nativeInstall();
         } catch (Exception e) {
             e.printStackTrace();
             throw new MojoExecutionException("Error", e);
         }
-    }
 
+        if (!result) {
+            throw new MojoExecutionException("Installing failed");
+        }
+    }
 }
