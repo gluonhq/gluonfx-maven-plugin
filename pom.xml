@@ -38,6 +38,7 @@
   <name>client-maven-plugin Maven Mojo</name>
   <description>The Gluon Client Plugin is used to run JavaFX 11+ projects with Graal</description>
   <inceptionYear>2019</inceptionYear>
+  <url>https://github.com/gluonhq/client-maven-plugin</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
