@@ -7,8 +7,16 @@ set -e
 git config --global user.name "Gluon Bot"
 git config --global user.email "githubbot@gluonhq.com"
 
+# Decrypt encrypted files
+openssl aes-256-cbc -K $encrypted_95fe2bee0034_key -iv $encrypted_95fe2bee0034_iv -in .ci/gpg_keys.tar.enc -out gpg_keys.tar -d
+if [[ ! -s gpg_keys.tar ]]
+   then echo "Decryption failed."
+   exit 1
+fi
+tar xvf gpg_keys.tar
+
 # Release artifacts
-cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy
+cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true -B -U -Prelease
 
 # Update version by 1
 newVersion=${TRAVIS_TAG%.*}.$((${TRAVIS_TAG##*.} + 1))

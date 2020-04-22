@@ -4,9 +4,28 @@
                       http://maven.apache.org/xsd/settings-1.0.0.xsd">
   <servers>
     <server>
-      <id>gluon-nexus</id>
-      <username>${NEXUS_USERNAME}</username>
-      <password>${NEXUS_PASSWORD}</password>
+      <id>ossrh</id>
+      <username>${SONATYPE_USERNAME}</username>
+      <password>${SONATYPE_PASSWORD}</password>
     </server>
   </servers>
+
+  <profiles>
+    <profile>
+      <id>ossrh</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <gpg.executable>${GPG_EXECUTABLE}</gpg.executable>
+        <gpg.keyname>${GPG_KEYNAME}</gpg.keyname>
+        <gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase>
+        <!-- gpg should NOT use the default keyring from the current user's home -->
+        <gpg.defaultKeyring>false</gpg.defaultKeyring>
+        <!-- gpg should NOT use the keyrings -->
+        <gpg.publicKeyring>${TRAVIS_BUILD_DIR}/pubring.gpg</gpg.publicKeyring>
+        <gpg.secretKeyring>${TRAVIS_BUILD_DIR}/secring.gpg</gpg.secretKeyring>
+      </properties>
+    </profile>
+  </profiles>
 </settings>
