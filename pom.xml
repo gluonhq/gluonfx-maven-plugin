@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.gluonhq</groupId>
       <artifactId>substrate</artifactId>
-      <version>0.0.19-SNAPSHOT</version>
+      <version>0.0.19</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
