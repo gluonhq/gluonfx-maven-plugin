@@ -66,14 +66,14 @@ For example:
 
 The client plugin will download the Android SDK and install the required packages. 
 
-Alternatively, you can define a custom location to the Android SDK by setting the `ANDROID_SDK` and `ANDROID_NDK` environment variables, making sure that you have installed all the packages from the following list:
+Alternatively, you can define a custom location to the Android SDK by setting the `ANDROID_SDK` environment variable, making sure that you have installed all the packages from the following list:
 
 * platforms;android-27
 * platform-tools
 * build-tools;27.0.3
-* ndk-bundle
 * extras;android;m2repository
 * extras;google;m2repository
+* ndk-bundle (in case it is not installed separately, then set the `ANDROID_NDK` environment variable accordingly)
 
 ## Getting started
 
@@ -112,7 +112,7 @@ or simply run the native executable found in `target/client`.
 
 #### iOS
 
-* Set the target to `ios` (for iOS devices) in the `pom.xml`:
+Set the target to `ios` (for iOS devices) in the `pom.xml`:
 
 ```
 <artifactId>client-maven-plugin</artifactId>
@@ -122,31 +122,32 @@ or simply run the native executable found in `target/client`.
 </configuration>
 ```
 
-* Build the native image:
+Build the native image:
 
 ```
 mvn clean client:build
 ```
 
-* Run the app on the connected iOS device:
+**Note**: Since all java bytecode is translated to native code, the compilation step can take a long time, and it requires a fair amount of memory.
+
+Run the app on the connected iOS device:
 
 ```
 mvn client:run
 ```
 
-* Or package and create an IPA file to submit to TestFlight or to the App Store:
+Or package and create an IPA file to submit to TestFlight or to the App Store:
 
 ```
 mvn client:package
 ```
 
-**Note**: Since all java bytecode is translated to native code, the compilation step can take a long time, and it requires a fair amount of memory.
-
 **Note**: In order to deploy apps to an iOS device, you need a valid iOS provisioning profile, as explained in the [documentation](https://docs.gluonhq.com/client/#_ios_deployment).
+
 
 #### Android
 
-* Set the target to `android` (for android devices) in `pom.xml`:
+Set the target to `android` (for android devices) in `pom.xml`:
 
 ```
 <artifactId>client-maven-plugin</artifactId>
@@ -156,31 +157,31 @@ mvn client:package
 </configuration>
 ```
 
-* Build the native image:
+Build the native image:
 
 ```
 mvn clean client:build
 ```
 
-* Package and create an APK file:
+**Note**: Since all java bytecode is translated to native code, the compilation step can take a long time, and it requires a fair amount of memory.
+
+Package and create an APK file:
 
 ```
 mvn client:package
 ```
 
-* Install the APK file on a connected Android device:
+Install the APK file on a connected Android device:
 
 ```
 mvn client:install
 ```
 
-* Run the installed app on the connected Android device:
+Run the installed app on the connected Android device:
 
 ```
 mvn client:run
 ```
-
-**Note**: Since all java bytecode is translated to native code, the compilation step can take a long time, and it requires a fair amount of memory.
 
 ### Documentation and samples
 
