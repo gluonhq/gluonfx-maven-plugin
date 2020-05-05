@@ -145,7 +145,7 @@ mvn client:package
 **Note**: In order to deploy apps to an iOS device, you need a valid iOS provisioning profile, as explained in the [documentation](https://docs.gluonhq.com/client/#_ios_deployment).
 
 
-#### Android
+#### Android
 
 Set the target to `android` (for android devices) in `pom.xml`:
 
