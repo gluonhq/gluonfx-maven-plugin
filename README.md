@@ -73,7 +73,7 @@ Alternatively, you can define a custom location to the Android SDK by setting th
 * build-tools;27.0.3
 * extras;android;m2repository
 * extras;google;m2repository
-* ndk-bundle (in case it is not installed separately, then set the `ANDROID_NDK` environment variable accordingly)
+* ndk-bundle (in case you opt to skip this bundle and download Android NDK package separately, set the `ANDROID_NDK` environment variable to its location)
 
 ## Getting started
 
