@@ -8,25 +8,23 @@ so it can directly be executed as a native application on the target platform.
 [![Travis CI](https://api.travis-ci.org/gluonhq/client-maven-plugin.svg?branch=master)](https://travis-ci.org/gluonhq/client-maven-plugin)
 [![BSD-3 license](https://img.shields.io/badge/license-BSD--3-%230778B9.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-### Requirements
+## Requirements
 
-#### Mac OS X and iOS
+### Mac OS X and iOS
 
 * Download this version of Graal VM: https://download2.gluonhq.com/substrate/graalvm/graalvm-svm-darwin-20.1.0-ea+28.zip and unpack it like you would any other JDK. (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
-For example:
+  For example:
 
-    export GRAALVM_HOME=/opt/graalvm-svm-darwin-20.1.0-ea+28
+      export GRAALVM_HOME=/opt/graalvm-svm-darwin-20.1.0-ea+28
 
-* Set `JAVA_HOME` to point to the GraalVM installation directory
+* Set `JAVA_HOME` to point to the GraalVM installation directory:
 
-For example:
+      export JAVA_HOME=$GRAALVM_HOME
 
-    export JAVA_HOME=$GRAALVM_HOME
-
-##### Additional requirements
+#### Additional requirements
 
 * iOS can be built only on Mac OS X
 
@@ -34,33 +32,31 @@ For example:
 
 * Install `libusbmuxd`
 
-Using `brew`:
+  Using `brew`:
 
-    brew install --HEAD libusbmuxd
+      brew install --HEAD libusbmuxd
 
 * Install `libimobiledevice`
 
-Using `brew`:
+  Using `brew`:
 
-    brew install --HEAD libimobiledevice
+      brew install --HEAD libimobiledevice
 
-#### Linux and Android
+### Linux and Android
 
 * Download this version of Graal VM: https://download2.gluonhq.com/substrate/graalvm/graalvm-svm-linux-20.1.0-ea+28.zip and unpack it like you would any other JDK. (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
-For example:
+  For example:
 
-    export GRAALVM_HOME=/opt/graalvm-svm-linux-20.1.0-ea+28
+      export GRAALVM_HOME=/opt/graalvm-svm-linux-20.1.0-ea+28
 
-* Set `JAVA_HOME` to point to the GraalVM installation directory
+* Set `JAVA_HOME` to point to the GraalVM installation directory:
 
-For example:
+      export JAVA_HOME=$GRAALVM_HOME
 
-    export JAVA_HOME=$GRAALVM_HOME
-
-##### Additional requirements
+#### Additional requirements
 
 * Android can be built only on Linux OS
 
@@ -74,6 +70,34 @@ Alternatively, you can define a custom location to the Android SDK by setting th
 * extras;android;m2repository
 * extras;google;m2repository
 * ndk-bundle (in case you opt to skip this bundle and download Android NDK package separately, set the `ANDROID_NDK` environment variable to its location)
+
+### Windows
+
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-windows-amd64-20.2.0-dev.zip` from the list of assets and unzip it to a preferred location on your system.
+
+* Make sure you have installed Visual Studio 2019 with the following components:
+  - Choose the English Language Pack
+  - C++/CLI support for v142 build tools (14.25 or later)
+  - MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.25 or later)
+  - Windows Universal CRT SDK
+  - Windows 10 SDK (10.0.19041.0 or later)
+
+* Run the maven commands mentioned below in a `x64 Native Tools Command Prompt for VS 2019`. This command prompt can be accessed
+from the start menu.
+
+* Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
+
+  For example:
+
+      set GRAALVM_HOME=C:\tools\graalvm-ce-java11-20.2.0-dev
+
+  Install native-image by running:
+
+      %GRAALVM_HOME%\bin\gu install native-image
+  
+* Set `JAVA_HOME` to point to the GraalVM installation directory:
+
+      set JAVA_HOME=%GRAALVM_HOME%
 
 ## Getting started
 
@@ -98,7 +122,7 @@ The plugin allows some options that can be set in `configuration`, to modify the
 
 #### Desktop
 
-The following goals apply to Linux and Mac OS X.
+The following goals apply to Linux, Mac OS X and Windows.
 
 To build the native image:
 
@@ -183,7 +207,7 @@ Run the installed app on the connected Android device:
 mvn client:run
 ```
 
-### Documentation and samples
+## Documentation and samples
 
 Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [maven samples](https://github.com/gluonhq/client-samples/tree/master/Maven).
 
