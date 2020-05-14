@@ -86,7 +86,7 @@ Edit your pom file and add the plugin:
     <plugin>
         <groupId>com.gluonhq</groupId>
         <artifactId>client-maven-plugin</artifactId>
-        <version>0.1.23</version>
+        <version>0.1.24</version>
         <configuration>
             <mainClass>your.mainClass</mainClass>
         </configuration>
