@@ -34,7 +34,6 @@ import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.SubstrateDispatcher;
-import com.gluonhq.substrate.model.IosSigningConfiguration;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
@@ -122,14 +121,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.enableSWRendering", defaultValue = "false")
     String enableSWRendering;
 
-    @Parameter(property = "client.IOSSigningIdentity")
-    String IOSSigningIdentity;
-
-    @Parameter(property = "client.IOSProvisioningProfile")
-    String IOSProvisioningProfile;
-
-    @Parameter(property = "client.IOSSkipSigning")
-    String IOSSkipSigning;
+    @Parameter(property = "client.releaseConfiguration")
+    ReleaseConfiguration releaseConfiguration;
 
     private ProcessDestroyer processDestroyer;
 
@@ -157,11 +150,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 break;
             case Constants.PROFILE_IOS:
                 targetTriplet = new Triplet(Constants.Profile.IOS);
-                IosSigningConfiguration signingConfiguration = new IosSigningConfiguration();
-                signingConfiguration.setProvidedSigningIdentity(IOSSigningIdentity);
-                signingConfiguration.setProvidedProvisioningProfile(IOSProvisioningProfile);
-                signingConfiguration.setSkipSigning(IOSSkipSigning != null && "true".equals(IOSSkipSigning));
-                clientConfig.setIosSigningConfiguration(signingConfiguration);
                 break;
             case Constants.PROFILE_IOS_SIM:
                 targetTriplet = new Triplet(Constants.Profile.IOS_SIM);
@@ -174,6 +162,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
+        }
+        if (releaseConfiguration != null) {
+            clientConfig.setReleaseConfiguration(releaseConfiguration.toSubstrate());
         }
         clientConfig.setTarget(targetTriplet);
 
