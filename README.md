@@ -44,7 +44,7 @@ so it can directly be executed as a native application on the target platform.
 
 ### Linux and Android
 
-* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-darwin-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-linux-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
