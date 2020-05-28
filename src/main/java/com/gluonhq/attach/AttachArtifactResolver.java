@@ -75,6 +75,7 @@ public class AttachArtifactResolver {
                     }
                     return resolve.stream();
                 })
+                .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toMap(Artifact::getArtifactId, a -> a));
     }
