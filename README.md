@@ -12,13 +12,13 @@ so it can directly be executed as a native application on the target platform.
 
 ### Mac OS X and iOS
 
-* Download this version of Graal VM: https://download2.gluonhq.com/substrate/graalvm/graalvm-svm-darwin-20.1.0-ea+28.zip and unpack it like you would any other JDK. (e.g. in `/opt`)
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-darwin-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
   For example:
 
-      export GRAALVM_HOME=/opt/graalvm-svm-darwin-20.1.0-ea+28
+      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev
 
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
@@ -44,13 +44,13 @@ so it can directly be executed as a native application on the target platform.
 
 ### Linux and Android
 
-* Download this version of Graal VM: https://download2.gluonhq.com/substrate/graalvm/graalvm-svm-linux-20.1.0-ea+28.zip and unpack it like you would any other JDK. (e.g. in `/opt`)
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-darwin-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
   For example:
 
-      export GRAALVM_HOME=/opt/graalvm-svm-linux-20.1.0-ea+28
+      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev
 
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
@@ -64,9 +64,9 @@ The client plugin will download the Android SDK and install the required package
 
 Alternatively, you can define a custom location to the Android SDK by setting the `ANDROID_SDK` environment variable, making sure that you have installed all the packages from the following list:
 
-* platforms;android-27
+* platforms;android-28
 * platform-tools
-* build-tools;27.0.3
+* build-tools;29.0.2
 * extras;android;m2repository
 * extras;google;m2repository
 * ndk-bundle (in case you opt to skip this bundle and download Android NDK package separately, set the `ANDROID_NDK` environment variable to its location)
