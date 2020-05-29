@@ -62,6 +62,7 @@ public class AttachServiceDefinition {
     String getSupportedPlatform(String target) {
         switch (target) {
             case Constants.PROFILE_HOST:
+            case Constants.PROFILE_LINUX_AARCH64:
                 return getService().isDesktopSupported() ? "desktop" : "";
             case Constants.PROFILE_IOS:
             case Constants.PROFILE_IOS_SIM:
