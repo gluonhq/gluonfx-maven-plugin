@@ -46,13 +46,14 @@
     <maven.compiler.target>11</maven.compiler.target>
     <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
+    <substrate.version>0.0.25-SNAPSHOT</substrate.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.gluonhq</groupId>
       <artifactId>substrate</artifactId>
-      <version>0.0.25-SNAPSHOT</version>
+      <version>${substrate.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
