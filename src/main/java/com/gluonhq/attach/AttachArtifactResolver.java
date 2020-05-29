@@ -55,10 +55,13 @@ public class AttachArtifactResolver {
                 .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()))
                 .map(d -> {
                     if (UTIL_ARTIFACT.equals(d.getArtifactId())) {
-                        return Constants.PROFILE_ANDROID.equals(target) ?
-                                new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
-                                        target, d.getType(), d.getVersion()) :
-                                null;
+                        if (Constants.PROFILE_ANDROID.equals(target) ||
+                            Constants.PROFILE_IOS.equals(target)||
+                            Constants.PROFILE_IOS_SIM.equals(target)) {
+                            return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
+                                    target, d.getType(), d.getVersion());
+                        }
+                        return  null;
                     }
                     AttachServiceDefinition asd = new AttachServiceDefinition(d.getArtifactId());
                     return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
