@@ -35,7 +35,7 @@ mvn versions:set -DnewVersion=$NEW_PROJECT_VERSION-SNAPSHOT -DgenerateBackupPoms
 # Update Substrate to next snapshot version
 mvn versions:set-property -Dproperty=substrate.version -DnewVersion=$NEW_SUBSTRATE_VERSION-SNAPSHOT -DgenerateBackupPoms=false
 
-git commit pom.xml -m "Prepare development of $newVersion"
+git commit pom.xml -m "Prepare development of $NEW_PROJECT_VERSION"
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:master
 
 # Update samples
