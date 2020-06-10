@@ -61,6 +61,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MavenArtifactResolver {
@@ -116,7 +118,7 @@ public class MavenArtifactResolver {
             List<ArtifactResult> results = repositorySystem.resolveArtifacts(systemSession, artifactRequests);
             resolvedArtifact = results.get(results.size() - 1);
         } catch (ArtifactResolutionException e) {
-            e.printStackTrace();
+            Logger.getLogger(MavenArtifactResolver.class.getName()).log(Level.SEVERE, "Error resolving artifact: " + e.getMessage());
             return null;
         }
 
