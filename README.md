@@ -18,7 +18,7 @@ so it can directly be executed as a native application on the target platform.
 
   For example:
 
-      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev
+      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev/Contents/Home
 
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
