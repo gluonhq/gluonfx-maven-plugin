@@ -63,6 +63,7 @@ public class NativeBuildMojo extends NativeBaseMojo {
         invocationRequest.setProfiles(project.getActiveProfiles().stream()
                 .map(Profile::getId)
                 .collect(Collectors.toList()));
+        invocationRequest.setProperties(session.getRequest().getSystemProperties());
         invocationRequest.setPomFile(new File(pom));
 
         invocationRequest.setGoals(Arrays.asList("client:compile", "client:link"));
