@@ -34,7 +34,7 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>client-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.1.28</version>
+  <version>0.1.29-SNAPSHOT</version>
   <name>client-maven-plugin Maven Mojo</name>
   <description>The Gluon Client Plugin is used to run JavaFX 11+ projects with Graal</description>
   <inceptionYear>2019</inceptionYear>
@@ -46,7 +46,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
-    <substrate.version>0.0.26</substrate.version>
+    <substrate.version>0.0.27-SNAPSHOT</substrate.version>
   </properties>
 
   <dependencies>
