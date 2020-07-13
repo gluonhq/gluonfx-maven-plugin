@@ -43,3 +43,6 @@ sh .ci/update-samples.sh "$TRAVIS_TAG"
 
 # Update archetypes
 bash .ci/update-archetypes.sh "$TRAVIS_TAG"
+
+# Update docs
+bash .ci/update-docs.sh "$TRAVIS_TAG"
