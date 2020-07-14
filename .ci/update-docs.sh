@@ -10,8 +10,9 @@ cd docs
 sed -i -z "0,/CLIENT_VERSION=.*/s//CLIENT_VERSION=$1/" gradle.properties
 
 # Create HTML docs
-./gradlew asciidoc
+sh gradlew asciidoc
 
 # AWS copy
 pip install s3cmd
+touch ~/.s3cfg
 s3cmd --no-mime-magic --guess-mime-type --access_key "$AWS_ACCESS_KEY" --secret_key "$AWS_SECRET_KEY" sync -P build/docs/html5/client/ s3://docs.gluonhq.com/client/$1/
