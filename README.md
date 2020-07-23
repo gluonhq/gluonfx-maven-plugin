@@ -12,13 +12,13 @@ so it can directly be executed as a native application on the target platform.
 
 ### Mac OS X and iOS
 
-* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-darwin-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-darwin-amd64-20.3.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
   For example:
 
-      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev/Contents/Home
+      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.3.0-dev/Contents/Home
 
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
@@ -44,13 +44,13 @@ so it can directly be executed as a native application on the target platform.
 
 ### Linux and Android
 
-* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-linux-amd64-20.2.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-linux-amd64-20.3.0-dev.tar.gz` from the list of assets and unpack it to a preferred location on your system (e.g. in `/opt`)
 
 * Configure the runtime environment. Set `GRAALVM_HOME` environment variable to the GraalVM installation directory.
 
   For example:
 
-      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.2.0-dev
+      export GRAALVM_HOME=/opt/graalvm-ce-java11-20.3.0-dev
 
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
@@ -73,7 +73,7 @@ Alternatively, you can define a custom location to the Android SDK by setting th
 
 ### Windows
 
-* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-windows-amd64-20.2.0-dev.zip` from the list of assets and unzip it to a preferred location on your system.
+* Download the latest development version of GraalVM: https://github.com/graalvm/graalvm-ce-dev-builds/releases by choosing `graalvm-ce-java11-windows-amd64-20.3.0-dev.zip` from the list of assets and unzip it to a preferred location on your system.
 
 * Make sure you have installed Visual Studio 2019 with the following components:
   - Choose the English Language Pack
@@ -89,7 +89,7 @@ from the start menu.
 
   For example:
 
-      set GRAALVM_HOME=C:\tools\graalvm-ce-java11-20.2.0-dev
+      set GRAALVM_HOME=C:\tools\graalvm-ce-java11-20.3.0-dev
 
   Install native-image by running:
 
