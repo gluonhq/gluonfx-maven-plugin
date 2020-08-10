@@ -60,10 +60,16 @@ public class NativeBuildMojo extends NativeBaseMojo {
 
         // prepare the execution:
         final InvocationRequest invocationRequest = new DefaultInvocationRequest();
+
+        // apply profiles to both goals
         invocationRequest.setProfiles(project.getActiveProfiles().stream()
                 .map(Profile::getId)
                 .collect(Collectors.toList()));
-        invocationRequest.setProperties(session.getRequest().getSystemProperties());
+
+        // apply properties to both goals that were set via the -Dkey=value
+        // parameter on the command line
+        invocationRequest.setProperties(session.getRequest().getUserProperties());
+
         invocationRequest.setPomFile(new File(pom));
 
         invocationRequest.setGoals(Arrays.asList("client:compile", "client:link"));
