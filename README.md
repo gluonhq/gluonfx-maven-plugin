@@ -28,6 +28,8 @@ so it can directly be executed as a native application on the target platform.
 
 * iOS can be built only on Mac OS X
 
+* Xcode 11+ is required to build for iOS 13+. Install `Xcode` from the [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835?mt=12) if you haven't already. 
+
 * Install `Homebrew`, if you haven't already. Please refer to https://brew.sh/ for more information.
 
 * Install `libusbmuxd`
