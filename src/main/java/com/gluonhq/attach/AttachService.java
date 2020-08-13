@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2020 Gluon
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import java.util.Locale;
  */
 public enum AttachService {
     ACCELEROMETER,
+    AUDIO,
     AUDIO_RECORDING(true /* desktopSupported */),
     AUGMENTED_REALITY,
     BARCODE_SCAN,
