@@ -34,7 +34,6 @@ import com.gluonhq.substrate.Constants;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 import java.util.List;
@@ -49,8 +48,7 @@ public class AttachArtifactResolver {
     private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
     public static final String UTIL_ARTIFACT = "util";
 
-    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, List<Repository> repositories, String target) {
-        final MavenArtifactResolver resolver = new MavenArtifactResolver(repositories);
+    public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, String target) {
         return dependencies.stream()
                 .filter(d -> DEPENDENCY_GROUP.equals(d.getGroupId()))
                 .map(d -> {
@@ -69,7 +67,7 @@ public class AttachArtifactResolver {
                 })
                 .filter(Objects::nonNull)
                 .flatMap(a -> {
-                    Set<Artifact> resolve = resolver.resolve(a);
+                    Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a);
                     if (resolve == null) {
                         return Stream.empty();
                     }

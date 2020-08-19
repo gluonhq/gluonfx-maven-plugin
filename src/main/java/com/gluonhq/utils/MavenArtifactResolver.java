@@ -67,21 +67,44 @@ import java.util.stream.Collectors;
 
 public class MavenArtifactResolver {
 
-    private static String DEFAULT_LOCAL_REPO = org.apache.maven.repository.RepositorySystem.
+    private static final String DEFAULT_LOCAL_REPO = org.apache.maven.repository.RepositorySystem.
             defaultUserLocalRepository.getAbsolutePath();
 
     private final RepositorySystem repositorySystem;
     private final List<RemoteRepository> remoteRepositories;
+    private final RepositorySystemSession systemSession;
 
-    public MavenArtifactResolver(List<Repository> repositories) {
-        this.repositorySystem = createRepositorySystem();
-        this.remoteRepositories = new LinkedList<>();
-        repositories.forEach(r -> {
-            RemoteRepository repository = new RemoteRepository
-                .Builder(r.getId(), "default", r.getUrl())
-                .build();
-            remoteRepositories.add(repository);
-        });
+    private static MavenArtifactResolver instance;
+
+    public static MavenArtifactResolver getInstance() {
+        if (!isInitialized()) {
+            throw new IllegalStateException("MavenArtifactResolver not initialized");
+        }
+        return instance;
+    }
+
+    private MavenArtifactResolver(List<Repository> repositories) {
+        repositorySystem = createRepositorySystem();
+        systemSession = createRepositorySystemSession(repositorySystem, DEFAULT_LOCAL_REPO);
+        remoteRepositories = new LinkedList<>();
+        repositories.stream()
+                .filter(r -> remoteRepositories.stream()
+                        .noneMatch(remote -> remote.getId().equals(r.getId())))
+                .forEach(r ->
+                        remoteRepositories.add(new RemoteRepository
+                                .Builder(r.getId(), "default", r.getUrl())
+                                .build()));
+    }
+
+    public static boolean isInitialized() {
+        return instance != null;
+    }
+
+    public static void initRepositories(List<Repository> repositories) {
+        if (isInitialized()) {
+            return;
+        }
+        instance = new MavenArtifactResolver(repositories);
     }
 
     private RepositorySystem createRepositorySystem() {
@@ -106,8 +129,6 @@ public class MavenArtifactResolver {
     }
 
     public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
-        RepositorySystemSession systemSession = createRepositorySystemSession(this.repositorySystem, DEFAULT_LOCAL_REPO);
-
         ArtifactResult resolvedArtifact;
         try {
             List<ArtifactRequest> artifactRequests = Arrays.asList(
