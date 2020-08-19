@@ -75,7 +75,7 @@ Alternatively, you can define a custom location to the Android SDK by setting th
 
 ### Windows
 
-* Download the latest release version of GraalVM: https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.2.0 by choosing `graalvm-ce-java11-windows-amd64-20.2.0-dev.zip` from the list of assets and unzip it to a preferred location on your system.
+* Download the latest release version of GraalVM: https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-20.2.0 by choosing `graalvm-ce-java11-windows-amd64-20.2.0.zip` from the list of assets and unzip it to a preferred location on your system.
 
 * Make sure you have installed Visual Studio 2019 with the following components:
   - Choose the English Language Pack
@@ -93,10 +93,6 @@ from the start menu.
 
       set GRAALVM_HOME=C:\tools\graalvm-ce-java11-20.2.0
 
-  Install native-image by running:
-
-      %GRAALVM_HOME%\bin\gu install native-image
-  
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
       set JAVA_HOME=%GRAALVM_HOME%
