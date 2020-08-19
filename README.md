@@ -93,10 +93,6 @@ from the start menu.
 
       set GRAALVM_HOME=C:\tools\graalvm-ce-java11-20.2.0
 
-  Install native-image by running:
-
-      %GRAALVM_HOME%\bin\gu install native-image
-  
 * Set `JAVA_HOME` to point to the GraalVM installation directory:
 
       set JAVA_HOME=%GRAALVM_HOME%
