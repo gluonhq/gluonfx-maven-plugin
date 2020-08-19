@@ -4,8 +4,11 @@
 ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 # deploy if snapshot found
-if [[ $ver == *"SNAPSHOT"* ]] 
+if [[ $ver == *"SNAPSHOT"* ]]
 then
     cp .travis.settings.xml $HOME/.m2/settings.xml
     mvn deploy -DskipTests=true
 fi
+
+# Update docs
+bash .ci/update-docs.sh "$ver"
