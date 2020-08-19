@@ -45,6 +45,7 @@ import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -60,10 +61,13 @@ import org.eclipse.aether.util.filter.DependencyFilterUtils;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER;
 
 public class MavenArtifactResolver {
 
@@ -77,9 +81,35 @@ public class MavenArtifactResolver {
         this.repositorySystem = createRepositorySystem();
         this.remoteRepositories = new LinkedList<>();
         repositories.forEach(r -> {
+            org.apache.maven.model.RepositoryPolicy releases = r.getReleases();
+            RepositoryPolicy releasesRepositoryPolicy = null;
+            if (releases != null) {
+                releasesRepositoryPolicy = new RepositoryPolicy(releases.isEnabled(),
+                        releases.getUpdatePolicy() == null ? UPDATE_POLICY_NEVER : releases.getUpdatePolicy(),
+                        releases.getChecksumPolicy());
+            }
+            RepositoryPolicy snapshotsRepositoryPolicy = null;
+            org.apache.maven.model.RepositoryPolicy snapshots = r.getSnapshots();
+            if (snapshots != null) {
+                snapshotsRepositoryPolicy = new RepositoryPolicy(snapshots.isEnabled(),
+                        snapshots.getUpdatePolicy() == null ? UPDATE_POLICY_NEVER : snapshots.getUpdatePolicy(),
+                        snapshots.getChecksumPolicy());
+            }
+            if (releasesRepositoryPolicy == null && snapshotsRepositoryPolicy == null) {
+                if (r.getUrl().toLowerCase(Locale.ROOT).contains("/releases")) {
+                    releasesRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_NEVER, null);
+                    snapshotsRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_NEVER, null);
+                } else if (r.getUrl().toLowerCase(Locale.ROOT).contains("/snapshots")) {
+                    releasesRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_NEVER, null);
+                    snapshotsRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_NEVER, null);
+                }
+            }
+
             RemoteRepository repository = new RemoteRepository
                 .Builder(r.getId(), "default", r.getUrl())
-                .build();
+                    .setReleasePolicy(releasesRepositoryPolicy)
+                    .setSnapshotPolicy(snapshotsRepositoryPolicy)
+                    .build();
             remoteRepositories.add(repository);
         });
     }
