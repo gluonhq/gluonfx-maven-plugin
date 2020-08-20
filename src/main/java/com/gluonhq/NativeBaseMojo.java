@@ -197,9 +197,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
-        if (!MavenArtifactResolver.isInitialized()) {
-            MavenArtifactResolver.initRepositories(project.getRepositories());
-        }
+        MavenArtifactResolver.initRepositories(project.getRepositories());
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
                 .sorted((a1, a2) -> {

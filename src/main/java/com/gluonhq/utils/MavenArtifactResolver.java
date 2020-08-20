@@ -76,8 +76,17 @@ public class MavenArtifactResolver {
 
     private static MavenArtifactResolver instance;
 
+    /**
+     * Returns an existing instance of MavenArtifactResolver.
+     *
+     * If the instance hasn't been created yet, it will throw an
+     * {@code IllegalStateException}. To prevent this,
+     * {@link #initRepositories(List)} has to be called first.
+     *
+     * @return an instance of MavenArtifactResolver
+     */
     public static MavenArtifactResolver getInstance() {
-        if (!isInitialized()) {
+        if (instance == null) {
             throw new IllegalStateException("MavenArtifactResolver not initialized");
         }
         return instance;
@@ -95,12 +104,14 @@ public class MavenArtifactResolver {
         });
     }
 
-    public static boolean isInitialized() {
-        return instance != null;
-    }
-
+    /**
+     * Creates and initializes a new instance with a list of remote
+     * repositories, only if such instance doesn't already exist
+     *
+     * @param repositories a list of remote repositories
+     */
     public static void initRepositories(List<Repository> repositories) {
-        if (isInitialized()) {
+        if (instance != null) {
             return;
         }
         instance = new MavenArtifactResolver(repositories);
@@ -127,6 +138,13 @@ public class MavenArtifactResolver {
         return systemSession;
     }
 
+    /**
+     * Finds a set of existing artifacts for a created artifact out of on some coordinates and
+     * classifier
+     *
+     * @param artifact the created artifact
+     * @return a set of existing artifacts
+     */
     public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
         ArtifactResult resolvedArtifact;
         try {
