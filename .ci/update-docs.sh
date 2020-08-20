@@ -16,5 +16,5 @@ if [ $RESULT -eq 0 ]; then
   echo "There are no changes to commit"
 else
   git commit gradle.properties -am "Update client version to v$1"
-  git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$SAMPLES_REPO_SLUG HEAD:master
+  git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$DOCS_REPO_SLUG HEAD:master
 fi
