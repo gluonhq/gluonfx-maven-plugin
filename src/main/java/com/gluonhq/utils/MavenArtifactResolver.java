@@ -67,21 +67,54 @@ import java.util.stream.Collectors;
 
 public class MavenArtifactResolver {
 
-    private static String DEFAULT_LOCAL_REPO = org.apache.maven.repository.RepositorySystem.
+    private static final String DEFAULT_LOCAL_REPO = org.apache.maven.repository.RepositorySystem.
             defaultUserLocalRepository.getAbsolutePath();
 
     private final RepositorySystem repositorySystem;
     private final List<RemoteRepository> remoteRepositories;
+    private final RepositorySystemSession systemSession;
 
-    public MavenArtifactResolver(List<Repository> repositories) {
-        this.repositorySystem = createRepositorySystem();
-        this.remoteRepositories = new LinkedList<>();
+    private static MavenArtifactResolver instance;
+
+    /**
+     * Returns an existing instance of MavenArtifactResolver.
+     *
+     * If the instance hasn't been created yet, it will throw an
+     * {@code IllegalStateException}. To prevent this,
+     * {@link #initRepositories(List)} has to be called first.
+     *
+     * @return an instance of MavenArtifactResolver
+     */
+    public static MavenArtifactResolver getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("MavenArtifactResolver not initialized");
+        }
+        return instance;
+    }
+
+    private MavenArtifactResolver(List<Repository> repositories) {
+        repositorySystem = createRepositorySystem();
+        systemSession = createRepositorySystemSession(repositorySystem, DEFAULT_LOCAL_REPO);
+        remoteRepositories = new LinkedList<>();
         repositories.forEach(r -> {
             RemoteRepository repository = new RemoteRepository
-                .Builder(r.getId(), "default", r.getUrl())
-                .build();
+                    .Builder(r.getId(), "default", r.getUrl())
+                    .build();
             remoteRepositories.add(repository);
         });
+    }
+
+    /**
+     * Creates and initializes a new instance with a list of remote
+     * repositories, only if such instance doesn't already exist
+     *
+     * @param repositories a list of remote repositories
+     */
+    public static void initRepositories(List<Repository> repositories) {
+        if (instance != null) {
+            return;
+        }
+        instance = new MavenArtifactResolver(repositories);
     }
 
     private RepositorySystem createRepositorySystem() {
@@ -105,9 +138,14 @@ public class MavenArtifactResolver {
         return systemSession;
     }
 
+    /**
+     * Finds a set of existing artifacts for a created artifact out of on some coordinates and
+     * classifier
+     *
+     * @param artifact the created artifact
+     * @return a set of existing artifacts
+     */
     public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
-        RepositorySystemSession systemSession = createRepositorySystemSession(this.repositorySystem, DEFAULT_LOCAL_REPO);
-
         ArtifactResult resolvedArtifact;
         try {
             List<ArtifactRequest> artifactRequests = Arrays.asList(

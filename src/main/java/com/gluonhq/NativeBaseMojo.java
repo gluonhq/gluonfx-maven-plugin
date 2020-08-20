@@ -197,6 +197,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
+        MavenArtifactResolver.initRepositories(project.getRepositories());
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
                 .sorted((a1, a2) -> {
@@ -225,7 +226,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     List<Artifact> getAttachDependencies() {
-        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), project.getRepositories(), target);
+        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), target);
         if (attachList != null) {
             return Stream.concat(attachList.stream(), Stream.of(UTIL_ARTIFACT))
                 .distinct()
@@ -248,14 +249,12 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         if (scope == null || scope.isEmpty()) {
             return new ArrayList<>();
         }
-
-        final MavenArtifactResolver resolver = new MavenArtifactResolver(project.getRepositories());
         return project.getDependencies().stream()
                 .filter(d -> scope.equals(d.getScope()))
                 .map(d -> new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
                         d.getClassifier(), d.getType(), d.getVersion()))
                 .flatMap(a -> {
-                    Set<Artifact> resolve = resolver.resolve(a);
+                    Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a);
                     if (resolve == null) {
                         return Stream.empty();
                     }
