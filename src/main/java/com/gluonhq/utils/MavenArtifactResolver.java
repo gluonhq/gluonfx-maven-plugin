@@ -118,10 +118,10 @@ public class MavenArtifactResolver {
                         snapshots.getChecksumPolicy());
             }
             if (releasesRepositoryPolicy == null && snapshotsRepositoryPolicy == null) {
-                if (r.getUrl().toLowerCase(Locale.ROOT).contains("/releases")) {
+                if (r.getUrl().toLowerCase(Locale.ROOT).contains("/release")) {
                     releasesRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
                     snapshotsRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
-                } else if (r.getUrl().toLowerCase(Locale.ROOT).contains("/snapshots")) {
+                } else if (r.getUrl().toLowerCase(Locale.ROOT).contains("/snapshot")) {
                     releasesRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
                     snapshotsRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
                 }
