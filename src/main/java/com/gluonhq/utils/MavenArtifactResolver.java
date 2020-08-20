@@ -87,13 +87,12 @@ public class MavenArtifactResolver {
         repositorySystem = createRepositorySystem();
         systemSession = createRepositorySystemSession(repositorySystem, DEFAULT_LOCAL_REPO);
         remoteRepositories = new LinkedList<>();
-        repositories.stream()
-                .filter(r -> remoteRepositories.stream()
-                        .noneMatch(remote -> remote.getId().equals(r.getId())))
-                .forEach(r ->
-                        remoteRepositories.add(new RemoteRepository
-                                .Builder(r.getId(), "default", r.getUrl())
-                                .build()));
+        repositories.forEach(r -> {
+            RemoteRepository repository = new RemoteRepository
+                    .Builder(r.getId(), "default", r.getUrl())
+                    .build();
+            remoteRepositories.add(repository);
+        });
     }
 
     public static boolean isInitialized() {
