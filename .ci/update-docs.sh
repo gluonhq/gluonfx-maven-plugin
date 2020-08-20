@@ -9,10 +9,12 @@ cd docs
 # Update properties
 sed -i -z "0,/CLIENT_VERSION=.*/s//CLIENT_VERSION=$1/" gradle.properties
 
-# Create HTML docs
-sh gradlew asciidoc
-
-# AWS copy
-pip install s3cmd
-touch ~/.s3cfg
-s3cmd --no-mime-magic --guess-mime-type --access_key "$AWS_ACCESS_KEY" --secret_key "$AWS_SECRET_KEY" sync -P build/docs/html5/client/ s3://docs.gluonhq.com/client/$1/
+# Commit only if there are changes
+git diff --quiet && git diff --staged --quiet
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+  echo "There are no changes to commit"
+else
+  git commit gradle.properties -am "Update client version to v$1"
+  git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$SAMPLES_REPO_SLUG HEAD:master
+fi
