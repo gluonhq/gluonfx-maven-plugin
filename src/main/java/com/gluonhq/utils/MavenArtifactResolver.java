@@ -67,6 +67,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_WARN;
+import static org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_DAILY;
 import static org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER;
 
 public class MavenArtifactResolver {
@@ -117,11 +119,11 @@ public class MavenArtifactResolver {
             }
             if (releasesRepositoryPolicy == null && snapshotsRepositoryPolicy == null) {
                 if (r.getUrl().toLowerCase(Locale.ROOT).contains("/releases")) {
-                    releasesRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_NEVER, null);
-                    snapshotsRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_NEVER, null);
+                    releasesRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
+                    snapshotsRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
                 } else if (r.getUrl().toLowerCase(Locale.ROOT).contains("/snapshots")) {
-                    releasesRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_NEVER, null);
-                    snapshotsRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_NEVER, null);
+                    releasesRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
+                    snapshotsRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
                 }
             }
 
