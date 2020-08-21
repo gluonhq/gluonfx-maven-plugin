@@ -52,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -63,6 +64,8 @@ import java.util.stream.Stream;
 import static com.gluonhq.attach.AttachArtifactResolver.UTIL_ARTIFACT;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
+
+    private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
@@ -200,6 +203,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         MavenArtifactResolver.initRepositories(project.getRepositories());
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
+                .filter(d -> ALLOWED_DEPENDENCY_TYPES.stream().anyMatch(t -> t.equals(d.getType())))
                 .sorted((a1, a2) -> {
                     int compare = a1.compareTo(a2);
                     if (compare == 0) {
@@ -250,6 +254,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
             return new ArrayList<>();
         }
         return project.getDependencies().stream()
+                .filter(d -> ALLOWED_DEPENDENCY_TYPES.stream().anyMatch(t -> t.equals(d.getType())))
                 .filter(d -> scope.equals(d.getScope()))
                 .map(d -> new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
                         d.getClassifier(), d.getType(), d.getVersion()))
