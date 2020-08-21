@@ -15,6 +15,13 @@ RESULT=$?
 if [ $RESULT -eq 0 ]; then
   echo "There are no changes to commit"
 else
-  git commit gradle.properties -am "Update client version to v$1"
+  git commit gradle.properties -m "Update client version to v$1"
+fi
+
+# Check for snapshot or release version
+if [[ $1 == *-SNAPSHOT ]]; then
   git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$DOCS_REPO_SLUG HEAD:master
+else
+  git tag "client-$1"
+  git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$DOCS_REPO_SLUG $1
 fi
