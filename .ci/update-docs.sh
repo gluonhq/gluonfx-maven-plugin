@@ -9,10 +9,5 @@ cd docs
 # Update properties
 sed -i "s/CLIENT_VERSION=.*/CLIENT_VERSION=$1/g" gradle.properties
 
-# Create HTML docs
-sh gradlew asciidoc
-
-# AWS copy
-pip install s3cmd
-touch ~/.s3cfg
-s3cmd --no-mime-magic --guess-mime-type --access_key "$AWS_ACCESS_KEY" --secret_key "$AWS_SECRET_KEY" sync -P build/docs/html5/client/ s3://docs.gluonhq.com/client/$1/
+git commit gradle.properties -m "Update client-maven-plugin version to $1"
+git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$DOCS_REPO_SLUG HEAD:master
