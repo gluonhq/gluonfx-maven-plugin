@@ -9,6 +9,3 @@ then
     cp .travis.settings.xml $HOME/.m2/settings.xml
     mvn deploy -DskipTests=true
 fi
-
-# Update docs
-bash .ci/update-docs.sh "$ver"
