@@ -207,7 +207,7 @@ mvn client:run
 
 ## Documentation and samples
 
-Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [maven samples](https://github.com/gluonhq/client-samples/tree/master/Maven).
+Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [samples](https://github.com/gluonhq/gluon-samples/).
 
 ## Issues and Contributions ##
 
