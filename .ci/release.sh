@@ -46,3 +46,6 @@ bash .ci/update-archetypes.sh "$TRAVIS_TAG"
 
 # Update docs
 bash .ci/update-docs.sh "$TRAVIS_TAG"
+
+# Update ide-plugin properties
+bash .ci/update-ide-properties.sh "$TRAVIS_TAG"
