@@ -10,15 +10,15 @@ so it can directly be executed as a native application on the target platform.
 
 ## Requirements
 
-Check the [requirements](https://docs.gluonhq.com/client/#_requirements) before you get started.
+Check the requirements for the [target platform](https://docs.gluonhq.com/#_platforms) before you get started.
 
 ## Getting started
 
-Follow this [guide](https://docs.gluonhq.com/client/#_the_gluon_client_plugin_for_maven) on how to apply the plugin and use the different goals.
+Follow this [guide](https://docs.gluonhq.com/#_the_gluon_client_plugin_for_maven) on how to apply the plugin and use the different goals.
 
 ## Documentation and samples
 
-Check the [documentation](https://docs.gluonhq.com/client) for more details about the plugin and running the [samples](https://github.com/gluonhq/gluon-samples/).
+Check the [documentation](https://docs.gluonhq.com/) for more details about the plugin and running the [samples](https://github.com/gluonhq/gluon-samples/).
 
 ## Issues and Contributions ##
 
