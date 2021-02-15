@@ -270,7 +270,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .collect(Collectors.toList());
     }
 
-    private Optional<String> getGraalvmHome() {
+    Optional<String> getGraalvmHome() {
         if (graalvmHome != null) {
             return Optional.of(graalvmHome);
         } else if (System.getenv("GRAALVM_HOME") != null) {
