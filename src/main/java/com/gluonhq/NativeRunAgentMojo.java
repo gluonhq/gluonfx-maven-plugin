@@ -52,6 +52,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -146,7 +147,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
         // 1. Change executable to GRAALVM_HOME
         Xpp3Dom dom = config == null ? new Xpp3Dom("configuration") : (Xpp3Dom) config;
         Xpp3Dom executable = dom.getChild("executable");
-        String graalVMJava = getGraalvmHome().get() + "/bin/java";
+        String graalVMJava = Path.of(getGraalvmHome().get(), "bin", "java").toString();
         if (executable == null) {
             Xpp3Dom d = new Xpp3Dom("executable");
             d.setValue(graalVMJava);
