@@ -30,6 +30,7 @@
 
 package com.gluonhq;
 
+import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -71,6 +72,13 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        try {
+            createSubstrateDispatcher();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Error creating Substrate Dispatcher", e);
+        }
+
         final InvocationRequest invocationRequest = new DefaultInvocationRequest();
         invocationRequest.setProfiles(project.getActiveProfiles().stream()
                 .map(Profile::getId)
@@ -136,7 +144,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
 
     private Object modifyConfiguration(Object config) {
         // 1. Change executable to GRAALVM_HOME
-        Xpp3Dom dom = (Xpp3Dom) config;
+        Xpp3Dom dom = config == null ? new Xpp3Dom("configuration") : (Xpp3Dom) config;
         Xpp3Dom executable = dom.getChild("executable");
         String graalVMJava = getGraalvmHome().get() + "/bin/java";
         if (executable == null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2020, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,7 +130,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private ProcessDestroyer processDestroyer;
 
     public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
-        if (!getGraalvmHome().isPresent()) {
+        if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
                     " set graalvmHome in client-plugin configuration");
