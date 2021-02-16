@@ -271,11 +271,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     Optional<String> getGraalvmHome() {
-        if (graalvmHome != null) {
-            return Optional.of(graalvmHome);
-        } else if (System.getenv("GRAALVM_HOME") != null) {
-            return Optional.of(System.getenv("GRAALVM_HOME"));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(graalvmHome)
+                .or(() -> Optional.ofNullable(System.getenv("GRAALVM_HOME")));
     }
 }

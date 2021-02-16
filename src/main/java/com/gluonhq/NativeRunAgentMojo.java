@@ -166,7 +166,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
             dom.addChild(os);
         } else {
             Stream.of(options.getChildren())
-                    .filter(i -> i.getValue().contains("native-image-agent"))
+                    .filter(i -> i.getValue() != null && i.getValue().contains("native-image-agent"))
                     .findFirst()
                     .ifPresentOrElse(i ->
                             i.setValue(AGENTLIB_NATIVE_IMAGE_AGENT_STRING),
