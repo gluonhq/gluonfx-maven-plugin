@@ -30,7 +30,6 @@
 
 package com.gluonhq;
 
-import com.gluonhq.substrate.SubstrateDispatcher;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -47,26 +46,41 @@ import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Mojo(name = "runagent", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class NativeRunAgentMojo extends NativeBaseMojo {
 
-    private static final String AGENTLIB_NATIVE_IMAGE_AGENT_STRING = "-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image";
+    private static final String AGENTLIB_NATIVE_IMAGE_AGENT_STRING =
+            "-agentlib:native-image-agent=access-filter-file=src/main/resources/META-INF/native-image/filter-file.json,config-merge-dir=src/main/resources/META-INF/native-image";
+
+    private static final List<String> AGENTLIB_EXCLUSION_RULES = Arrays.asList(
+            "com.sun.glass.ui.mac.*", "com.sun.prism.es2.MacGLFactory",
+            "com.sun.glass.ui.gtk.*", "com.sun.prism.es2.X11GLFactory",
+            "com.gluonhq.attach.**"
+    );
 
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}/pom.xml")
     String pom;
 
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}/src/main/resources/META-INF/native-image")
     String agentDir;
+
+    @Parameter(readonly = true, required = true, defaultValue = "${basedir}/src/main/resources/META-INF/native-image/filter-file.json")
+    String agentFilter;
 
     @Parameter(readonly = true, required = true, defaultValue = "${project.basedir}/agentPom.xml")
     String agentPom;
@@ -96,10 +110,17 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
             agentDirFile.mkdirs();
         }
 
-        // 2. Create modified pom
+        // 2. Create filter file to exclude platform classes
+        try {
+            createFilterFile();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error generating agent filter", e);
+        }
+
+        // 3. Create modified pom
         File agentPomFile = new File(agentPom);
         try (InputStream is = new FileInputStream(new File(pom))) {
-            // 3. Create model from current pom
+            // 4. Create model from current pom
             Model model = new MavenXpp3Reader().read(is);
 
             model.getBuild().getPlugins().stream()
@@ -107,12 +128,12 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
                             p.getArtifactId().equalsIgnoreCase("javafx-maven-plugin"))
                     .findFirst()
                     .ifPresentOrElse(p -> {
-                        // 4. Modify configuration
+                        // 5. Modify configuration
                         p.setConfiguration(modifyConfiguration(p.getConfiguration()));
                     }, () -> getLog().warn("No JavaFX plugin found",
                             new MojoExecutionException("No JavaFX plugin found")));
 
-            // 5. Serialize new pom
+            // 6. Serialize new pom
             try (OutputStream os = new FileOutputStream(agentPomFile)) {
                 new MavenXpp3Writer().write(os, model);
             }
@@ -127,7 +148,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
         invocationRequest.setGoals(Collections.singletonList("javafx:run"));
 
         final Invoker invoker = new DefaultInvoker();
-        // 6. Execute:
+        // 7. Execute:
         try {
             final InvocationResult invocationResult = invoker.execute(invocationRequest);
             if (invocationResult.getExitCode() != 0) {
@@ -177,6 +198,27 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
                             });
         }
         return config;
+    }
+
+    private void createFilterFile() throws IOException {
+        File agentDirFilter = new File(agentFilter);
+        if (agentDirFilter.exists()) {
+            agentDirFilter.delete();
+        }
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(agentDirFilter)))) {
+            bw.write("{ \"rules\": [\n");
+            boolean ruleHasBeenWritten = false;
+            for (String rule : AGENTLIB_EXCLUSION_RULES) {
+                if (ruleHasBeenWritten) {
+                    bw.write(",\n");
+                } else {
+                    ruleHasBeenWritten = true;
+                }
+                bw.write("    {\"excludeClasses\" : \"" + rule + "\"}");
+            }
+            bw.write("\n  ]\n");
+            bw.write("}\n");
+        }
     }
 }
 
