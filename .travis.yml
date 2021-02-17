@@ -13,6 +13,7 @@ addons:
   apt:
     packages:
       - xmlstarlet
+      - awscli
 
 # Do not run travis install step `./gradlew assemble`
 install: true
