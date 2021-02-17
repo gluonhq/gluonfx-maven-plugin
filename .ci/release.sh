@@ -18,34 +18,30 @@ tar xvf gpg_keys.tar
 # Release artifacts
 cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy -DskipTests=true -B -U -Prelease
 
-# Update README with the latest released version
-sed -i "0,/<version>.*<\/version>/s//<version>$TRAVIS_TAG<\/version>/" README.md
-git commit README.md -m "Use latest release v$TRAVIS_TAG in README"
-
-# Update Substrate version
+# Create Substrate version variable
 SUBSTRATE_VERSION=$(mvn help:evaluate -Dexpression=substrate.version -q -DforceStdout)
 NEW_SUBSTRATE_VERSION=${SUBSTRATE_VERSION%.*}.$((${SUBSTRATE_VERSION##*.} + 1))
 
 # Update version by 1
 NEW_PROJECT_VERSION=${TRAVIS_TAG%.*}.$((${TRAVIS_TAG##*.} + 1))
 
-# Update project version to next snapshot version
+echo "Update project version to next snapshot version"
 mvn versions:set -DnewVersion=$NEW_PROJECT_VERSION-SNAPSHOT -DgenerateBackupPoms=false
 
-# Update Substrate to next snapshot version
+echo "Update Substrate to next snapshot version"
 mvn versions:set-property -Dproperty=substrate.version -DnewVersion=$NEW_SUBSTRATE_VERSION-SNAPSHOT -DgenerateBackupPoms=false
 
 git commit pom.xml -m "Prepare development of $NEW_PROJECT_VERSION"
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:master
 
-# Update samples
+echo "Update samples"
 sh .ci/update-samples.sh "$TRAVIS_TAG"
 
-# Update archetypes
+echo "Update archetypes"
 bash .ci/update-archetypes.sh "$TRAVIS_TAG"
 
-# Update docs
+echo "Update docs"
 bash .ci/update-docs.sh "$TRAVIS_TAG"
 
-# Update ide-plugin properties
+echo "Update ide-plugin properties"
 bash .ci/update-ide-properties.sh "$TRAVIS_TAG"
