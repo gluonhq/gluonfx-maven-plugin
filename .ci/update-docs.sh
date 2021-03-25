@@ -10,5 +10,5 @@ cd docs
 sed -i "s/CLIENT_MAVEN_PLUGIN_VERSION=.*/CLIENT_MAVEN_PLUGIN_VERSION=$1/g" gradle.properties
 sed -i "s/CLIENT_GRADLE_PLUGIN_VERSION=.*/CLIENT_GRADLE_PLUGIN_VERSION=$1/g" gradle.properties
 
-git commit gradle.properties -m "Update client-maven-plugin version to $1"
+git commit gradle.properties -m "Update client plugins to version $1"
 git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$DOCS_REPO_SLUG HEAD:master

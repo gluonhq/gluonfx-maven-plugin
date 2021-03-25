@@ -37,6 +37,9 @@ git push https://gluon-bot:$GITHUB_PASSWORD@github.com/$TRAVIS_REPO_SLUG HEAD:ma
 echo "Update samples"
 sh .ci/update-samples.sh "$TRAVIS_TAG"
 
+echo "Update hello-gluon-ci"
+sh .ci/update-hello-gluon-ci.sh "$TRAVIS_TAG"
+
 echo "Update archetypes"
 bash .ci/update-archetypes.sh "$TRAVIS_TAG"
 
