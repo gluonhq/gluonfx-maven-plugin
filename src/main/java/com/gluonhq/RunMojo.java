@@ -110,6 +110,11 @@ public class RunMojo extends NativeBaseMojo {
             throw new MojoExecutionException("Error reading pom", e);
         }
 
+        if (!project.getActiveProfiles().isEmpty()) {
+            final String activeProfiles = project.getActiveProfiles().stream().map(Profile::getId).collect(Collectors.joining(","));
+            getLog().warn(String.format("Active profile(s) '%s' will be ignored for 'client:run' goal on the host machine", activeProfiles));
+        }
+
         invocationRequest.setPomFile(runPomFile);
         invocationRequest.setGoals(Collections.singletonList("javafx:run"));
 
