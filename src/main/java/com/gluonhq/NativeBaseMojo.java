@@ -106,6 +106,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "client.nativeImageArgs")
     List<String> nativeImageArgs;
 
+    @Parameter(property = "client.runtimeArgs")
+    List<String> runtimeArgs;
+
     @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
     File outputDir;
 
@@ -123,6 +126,12 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "client.enableSWRendering", defaultValue = "false")
     String enableSWRendering;
+
+    @Parameter(property = "client.remoteHostName")
+    String remoteHostName;
+
+    @Parameter(property = "client.remoteDir")
+    String remoteDir;
 
     @Parameter(property = "client.releaseConfiguration")
     ReleaseConfiguration releaseConfiguration;
@@ -175,11 +184,14 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
         clientConfig.setCompilerArgs(nativeImageArgs);
+        clientConfig.setRuntimeArgs(runtimeArgs);
         clientConfig.setReflectionList(reflectionList);
         clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
         clientConfig.setUsePrismSW("true".equals(enableSWRendering));
+        clientConfig.setRemoteHostName(remoteHostName);
+        clientConfig.setRemoteDir(remoteDir);
 
         return clientConfig;
     }
