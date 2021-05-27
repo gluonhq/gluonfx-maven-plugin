@@ -30,26 +30,33 @@
 
 package com.gluonhq;
 
+import com.gluonhq.attach.AttachArtifactResolver;
 import com.gluonhq.attach.AttachService;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.shared.invoker.*;
+import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.DefaultInvoker;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationResult;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Mojo(name = "run", requiresDependencyResolution = ResolutionScope.RUNTIME)
 @Execute(phase = LifecyclePhase.PROCESS_CLASSES)
-public class RunAgentMojo extends NativeBaseMojo {
+public class RunMojo extends NativeBaseMojo {
 
     private static final String POM_XML = "pom.xml";
     private static final String RUN_POM_XML = "runPom.xml";
@@ -85,8 +92,11 @@ public class RunAgentMojo extends NativeBaseMojo {
             
             // 4. Check for Attach Dependencies and if Desktop is supported, add the classifier
             model.getDependencies().stream()
-                    .filter(p -> p.getGroupId().equalsIgnoreCase("com.gluonhq.attach") &&
-                            Arrays.stream(AttachService.values()).filter(AttachService::isDesktopSupported).anyMatch(attach -> attach.getServiceName().equalsIgnoreCase(p.getArtifactId())))
+                    .filter(p -> p.getGroupId().equalsIgnoreCase(AttachArtifactResolver.DEPENDENCY_GROUP))
+                    .filter(p -> Arrays.stream(AttachService.values())
+                            .filter(AttachService::isDesktopSupported)
+                            .anyMatch(attach -> attach.getServiceName().equalsIgnoreCase(p.getArtifactId()))
+                    )
                     .forEach(p -> p.setClassifier("desktop"));
 
             // 5. Serialize new pom
