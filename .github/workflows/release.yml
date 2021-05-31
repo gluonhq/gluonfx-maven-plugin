@@ -1,0 +1,68 @@
+name: Release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+          persist-credentials: false
+
+      - name: Setup Java 11 and Apache Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: MAVEN_GPG_PRIVATE_KEY
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Configure GIT
+        run: |
+          git config --global user.name "Gluon Bot"
+          git config --global user.email "githubbot@gluonhq.com"
+
+      - name: Publish to Maven Central
+        id: deploy
+        run: |
+          mvn deploy -DskipTests=true -B -U -Prelease
+          echo ::set-output name=exit_code::$?
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+
+      - name: Commit next development version
+        if: steps.deploy.outputs.exit_code == 0
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          SUBSTRATE_VERSION=$(mvn help:evaluate -Dexpression=substrate.version -q -DforceStdout)
+          NEW_SUBSTRATE_VERSION=${SUBSTRATE_VERSION%.*}.$((${SUBSTRATE_VERSION##*.} + 1))
+          NEW_PROJECT_VERSION=${TAG%.*}.$((${TAG##*.} + 1))
+          echo "Update project version to next snapshot version"
+          mvn versions:set -DnewVersion=$NEW_PROJECT_VERSION-SNAPSHOT -DgenerateBackupPoms=false
+          echo "Update Substrate to next snapshot version"
+          mvn versions:set-property -Dproperty=substrate.version -DnewVersion=$NEW_SUBSTRATE_VERSION-SNAPSHOT -DgenerateBackupPoms=false
+          git commit pom.xml -m "Prepare development of $NEW_PROJECT_VERSION"
+          git push https://gluon-bot:$PAT@github.com/$GITHUB_REPOSITORY HEAD:master
+        shell: bash
+        env:
+          PAT: ${{ secrets.PAT }}
+
+      - name: Update projects
+        if: steps.deploy.outputs.exit_code == 0
+        run: |
+          TAG=${GITHUB_REF/refs\/tags\//}
+          bash $GITHUB_WORKSPACE/.ci/release.sh $TAG $PAT
+        shell: bash
+        env:
+          GITHUB_PASSWORD: ${{ secrets.PAT }}
