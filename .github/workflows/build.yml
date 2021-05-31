@@ -1,0 +1,35 @@
+name: Build
+on:
+  push:
+    branches:
+#      - master
+      - travis-to-ga
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java 11 and Apache Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+      - name: Publish Snapshots
+        run: |
+          # Find version
+          ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          if [[ $ver == *"SNAPSHOT"* ]]
+          then
+              mvn deploy -DskipTests=true
+          fi
+        shell: bash
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
