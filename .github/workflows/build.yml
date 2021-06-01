@@ -29,7 +29,7 @@ jobs:
           ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           if [[ $ver == *"SNAPSHOT"* ]]
           then
-              mvn deploy -DskipTests=true
+              mvn deploy
           fi
         shell: bash
         env:
