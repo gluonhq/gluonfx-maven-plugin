@@ -1,0 +1,44 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Java 11 and Apache Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+
+      - name: Publish Snapshots
+        if: github.ref == 'refs/heads/master'
+        run: |
+          # Find version
+          ver=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          if [[ $ver == *"SNAPSHOT"* ]]
+          then
+              mvn deploy
+          fi
+        shell: bash
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+
+      - name: Draft release
+        if: github.ref == 'refs/heads/master'
+        # Drafts your next Release notes as Pull Requests are merged into "master"
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
