@@ -2,8 +2,7 @@ name: Build
 on:
   push:
     branches:
-#      - master
-      - travis-to-ga
+      - master
   pull_request:
     branches:
       - master
