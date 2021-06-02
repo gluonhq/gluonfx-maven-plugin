@@ -40,6 +40,7 @@ import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -61,6 +62,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.gluonhq.attach.AttachArtifactResolver.DEPENDENCY_GROUP;
 import static com.gluonhq.attach.AttachArtifactResolver.UTIL_ARTIFACT;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
@@ -230,7 +232,21 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     List<Artifact> getAttachDependencies() {
-        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), target);
+        List<Dependency> dependencies = project.getDependencies();
+
+        // include dependencies from project artifacts (transitive dependencies)
+        project.getArtifacts().stream()
+                .filter(a -> DEPENDENCY_GROUP.equals(a.getGroupId()))
+                .map(a -> {
+                    Dependency d = new Dependency();
+                    d.setGroupId(a.getGroupId());
+                    d.setArtifactId(a.getArtifactId());
+                    d.setVersion(a.getVersion());
+                    return d;
+                })
+                .forEach(dependencies::add);
+
+        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(dependencies, target);
         if (attachList != null) {
             return Stream.concat(attachList.stream(), Stream.of(UTIL_ARTIFACT))
                 .distinct()

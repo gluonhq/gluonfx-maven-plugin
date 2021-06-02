@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 
 public class AttachArtifactResolver {
 
-    private static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
+    public static final String DEPENDENCY_GROUP = "com.gluonhq.attach";
     public static final String UTIL_ARTIFACT = "util";
 
     public static Map<String, Artifact> findArtifactsForTarget(List<Dependency> dependencies, String target) {
