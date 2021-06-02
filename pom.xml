@@ -32,13 +32,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gluonhq</groupId>
-  <artifactId>client-maven-plugin</artifactId>
+  <artifactId>gluonfx-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.1.42-SNAPSHOT</version>
-  <name>client-maven-plugin Maven Mojo</name>
-  <description>The Gluon Client Plugin is used to run JavaFX 11+ projects with Graal</description>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>gluonfx-maven-plugin Maven Mojo</name>
+  <description>GluonFX plugin creates native images for JavaFX application</description>
   <inceptionYear>2019</inceptionYear>
-  <url>https://github.com/gluonhq/client-maven-plugin</url>
+  <url>https://github.com/gluonhq/gluonfx-maven-plugin</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -241,7 +241,7 @@
 
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/gluonhq/client-maven-plugin/issues</url>
+    <url>https://github.com/gluonhq/gluonfx-maven-plugin/issues</url>
   </issueManagement>
 
   <licenses>
@@ -268,9 +268,9 @@
   </developers>
 
   <scm>
-    <url>https://github.com/gluonhq/client-maven-plugin</url>
-    <connection>scm:git:git://github.com/gluonhq/client-maven-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:gluonhq/client-maven-plugin.git</developerConnection>
+    <url>https://github.com/gluonhq/gluonfx-maven-plugin</url>
+    <connection>scm:git:git://github.com/gluonhq/gluonfx-maven-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:gluonhq/gluonfx-maven-plugin.git</developerConnection>
   </scm>
 
   <distributionManagement>
