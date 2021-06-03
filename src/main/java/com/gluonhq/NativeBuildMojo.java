@@ -72,14 +72,14 @@ public class NativeBuildMojo extends NativeBaseMojo {
 
         invocationRequest.setPomFile(new File(pom));
 
-        invocationRequest.setGoals(Arrays.asList("client:compile", "client:link"));
+        invocationRequest.setGoals(Arrays.asList("gluonfx:compile", "gluonfx:link"));
 
         final Invoker invoker = new DefaultInvoker();
         // execute:
         try {
             final InvocationResult invocationResult = invoker.execute(invocationRequest);
             if (invocationResult.getExitCode() != 0) {
-                throw new MojoExecutionException("Error, client:build failed", invocationResult.getExecutionException());
+                throw new MojoExecutionException("Error, gluonfx:build failed", invocationResult.getExecutionException());
             }
         } catch (MavenInvocationException e) {
             e.printStackTrace();

@@ -133,7 +133,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
-                    " set graalvmHome in client-plugin configuration");
+                    " set graalvmHome in gluonfx-plugin configuration");
         }
         ProjectConfiguration substrateConfiguration = createSubstrateConfiguration();
         return new SubstrateDispatcher(outputDir.toPath(), substrateConfiguration);
