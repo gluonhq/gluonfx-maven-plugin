@@ -81,61 +81,61 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}")
     File basedir;
 
-    @Parameter(property = "client.graalvmHome")
+    @Parameter(property = "gluonfx.graalvmHome")
     String graalvmHome;
 
-    @Parameter(property = "client.javaStaticSdkVersion")
+    @Parameter(property = "gluonfx.javaStaticSdkVersion")
     String javaStaticSdkVersion;
 
-    @Parameter(property = "client.javafxStaticSdkVersion")
+    @Parameter(property = "gluonfx.javafxStaticSdkVersion")
     String javafxStaticSdkVersion;
 
-    @Parameter(property = "client.target", defaultValue = "host")
+    @Parameter(property = "gluonfx.target", defaultValue = "host")
     String target;
 
-    @Parameter(property = "client.bundlesList")
+    @Parameter(property = "gluonfx.bundlesList")
     List<String> bundlesList;
 
-    @Parameter(property = "client.resourcesList")
+    @Parameter(property = "gluonfx.resourcesList")
     List<String> resourcesList;
 
-    @Parameter(property = "client.reflectionList")
+    @Parameter(property = "gluonfx.reflectionList")
     List<String> reflectionList;
 
-    @Parameter(property = "client.jniList")
+    @Parameter(property = "gluonfx.jniList")
     List<String> jniList;
 
-    @Parameter(property = "client.nativeImageArgs")
+    @Parameter(property = "gluonfx.nativeImageArgs")
     List<String> nativeImageArgs;
 
-    @Parameter(property = "client.runtimeArgs")
+    @Parameter(property = "gluonfx.runtimeArgs")
     List<String> runtimeArgs;
 
-    @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/client")
+    @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/gluonfx")
     File outputDir;
 
-    @Parameter(property = "client.mainClass", required = true)
+    @Parameter(property = "gluonfx.mainClass", required = true)
     String mainClass;
 
-    @Parameter(property = "client.executable", defaultValue = "java")
+    @Parameter(property = "gluonfx.executable", defaultValue = "java")
     String executable;
 
-    @Parameter(property = "client.verbose", defaultValue = "false")
+    @Parameter(property = "gluonfx.verbose", defaultValue = "false")
     String verbose;
 
-    @Parameter(property = "client.attachList")
+    @Parameter(property = "gluonfx.attachList")
     List<String> attachList;
 
-    @Parameter(property = "client.enableSWRendering", defaultValue = "false")
+    @Parameter(property = "gluonfx.enableSWRendering", defaultValue = "false")
     String enableSWRendering;
 
-    @Parameter(property = "client.remoteHostName")
+    @Parameter(property = "gluonfx.remoteHostName")
     String remoteHostName;
 
-    @Parameter(property = "client.remoteDir")
+    @Parameter(property = "gluonfx.remoteDir")
     String remoteDir;
 
-    @Parameter(property = "client.releaseConfiguration")
+    @Parameter(property = "gluonfx.releaseConfiguration")
     ReleaseConfiguration releaseConfiguration;
 
     private ProcessDestroyer processDestroyer;
@@ -144,7 +144,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
-                    " set graalvmHome in client-plugin configuration");
+                    " set graalvmHome in gluonfx-plugin configuration");
         }
         ProjectConfiguration substrateConfiguration = createSubstrateConfiguration();
         return new SubstrateDispatcher(outputDir.toPath(), substrateConfiguration);
