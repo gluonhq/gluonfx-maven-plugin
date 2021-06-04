@@ -40,6 +40,7 @@ import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -61,6 +62,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.gluonhq.attach.AttachArtifactResolver.DEPENDENCY_GROUP;
 import static com.gluonhq.attach.AttachArtifactResolver.UTIL_ARTIFACT;
 
 public abstract class NativeBaseMojo extends AbstractMojo {
@@ -106,6 +108,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "gluonfx.nativeImageArgs")
     List<String> nativeImageArgs;
 
+    @Parameter(property = "gluonfx.runtimeArgs")
+    List<String> runtimeArgs;
+
     @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/gluonfx")
     File outputDir;
 
@@ -123,6 +128,12 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Parameter(property = "gluonfx.enableSWRendering", defaultValue = "false")
     String enableSWRendering;
+
+    @Parameter(property = "gluonfx.remoteHostName")
+    String remoteHostName;
+
+    @Parameter(property = "gluonfx.remoteDir")
+    String remoteDir;
 
     @Parameter(property = "gluonfx.releaseConfiguration")
     ReleaseConfiguration releaseConfiguration;
@@ -175,11 +186,14 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
         clientConfig.setCompilerArgs(nativeImageArgs);
+        clientConfig.setRuntimeArgs(runtimeArgs);
         clientConfig.setReflectionList(reflectionList);
         clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
         clientConfig.setUsePrismSW("true".equals(enableSWRendering));
+        clientConfig.setRemoteHostName(remoteHostName);
+        clientConfig.setRemoteDir(remoteDir);
 
         return clientConfig;
     }
@@ -230,7 +244,21 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     List<Artifact> getAttachDependencies() {
-        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(project.getDependencies(), target);
+        List<Dependency> dependencies = project.getDependencies();
+
+        // include dependencies from project artifacts (transitive dependencies)
+        project.getArtifacts().stream()
+                .filter(a -> DEPENDENCY_GROUP.equals(a.getGroupId()))
+                .map(a -> {
+                    Dependency d = new Dependency();
+                    d.setGroupId(a.getGroupId());
+                    d.setArtifactId(a.getArtifactId());
+                    d.setVersion(a.getVersion());
+                    return d;
+                })
+                .forEach(dependencies::add);
+
+        Map<String, Artifact> attachMap = AttachArtifactResolver.findArtifactsForTarget(dependencies, target);
         if (attachList != null) {
             return Stream.concat(attachList.stream(), Stream.of(UTIL_ARTIFACT))
                 .distinct()
