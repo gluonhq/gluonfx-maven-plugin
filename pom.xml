@@ -34,8 +34,8 @@
   <groupId>com.gluonhq</groupId>
   <artifactId>gluonfx-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.9.0-SNAPSHOT</version>
-  <name>gluonfx-maven-plugin Maven Mojo</name>
+  <version>0.9.0</version>
+  <name>GluonFX plugin for Maven</name>
   <description>GluonFX plugin allows to run JavaFX application on the JVM or to create their native images.</description>
   <inceptionYear>2019</inceptionYear>
   <url>https://github.com/gluonhq/gluonfx-maven-plugin</url>
@@ -46,7 +46,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
     <gpg.plugin.version>1.6</gpg.plugin.version>
-    <substrate.version>0.0.41-SNAPSHOT</substrate.version>
+    <substrate.version>0.0.40</substrate.version>
   </properties>
 
   <dependencies>
