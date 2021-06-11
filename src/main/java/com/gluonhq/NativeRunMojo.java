@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2020, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Mojo(name = "nativerun", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class NativeRunMojo extends NativeBaseMojo {
 
     @Override
@@ -48,5 +48,4 @@ public class NativeRunMojo extends NativeBaseMojo {
             throw new MojoExecutionException("Error", e);
         }
     }
-
 }
