@@ -1,6 +1,6 @@
 SAMPLES_REPO_SLUG=gluonhq/gluon-samples
 
-cd $TRAVIS_BUILD_DIR
+cd /tmp
 git clone https://github.com/$SAMPLES_REPO_SLUG
 cd gluon-samples
 
