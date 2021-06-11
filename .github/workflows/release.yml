@@ -58,10 +58,10 @@ jobs:
           PAT: ${{ secrets.PAT }}
 
       - name: Update projects
-        if: steps.deploy.outputs.exit_code == 0 && false # disable step until v1.0.0
+        if: steps.deploy.outputs.exit_code == 0
         run: |
-          TAG=${GITHUB_REF/refs\/tags\//}
-          bash $GITHUB_WORKSPACE/.github/scripts/release.sh $TAG $PAT
+          export TAG=${GITHUB_REF/refs\/tags\//}
+          bash $GITHUB_WORKSPACE/.github/scripts/release.sh
         shell: bash
         env:
           GITHUB_PASSWORD: ${{ secrets.PAT }}
