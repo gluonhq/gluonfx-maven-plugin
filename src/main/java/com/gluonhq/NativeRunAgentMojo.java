@@ -30,6 +30,8 @@
 
 package com.gluonhq;
 
+import com.gluonhq.attach.AttachArtifactResolver;
+import com.gluonhq.attach.AttachService;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -133,7 +135,16 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
                     }, () -> getLog().warn("No JavaFX plugin found",
                             new MojoExecutionException("No JavaFX plugin found")));
 
-            // 6. Serialize new pom
+            // 6. Check for Attach Dependencies and if Desktop is supported, add the classifier
+            model.getDependencies().stream()
+                    .filter(p -> p.getGroupId().equalsIgnoreCase(AttachArtifactResolver.DEPENDENCY_GROUP))
+                    .filter(p -> Arrays.stream(AttachService.values())
+                            .filter(AttachService::isDesktopSupported)
+                            .anyMatch(attach -> attach.getServiceName().equalsIgnoreCase(p.getArtifactId()))
+                    )
+                    .forEach(p -> p.setClassifier("desktop"));
+
+            // 7. Serialize new pom
             try (OutputStream os = new FileOutputStream(agentPomFile)) {
                 new MavenXpp3Writer().write(os, model);
             }
@@ -148,7 +159,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
         invocationRequest.setGoals(Collections.singletonList("javafx:run"));
 
         final Invoker invoker = new DefaultInvoker();
-        // 7. Execute:
+        // 8. Execute:
         try {
             final InvocationResult invocationResult = invoker.execute(invocationRequest);
             if (invocationResult.getExitCode() != 0) {
