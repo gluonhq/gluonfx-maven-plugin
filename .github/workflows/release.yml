@@ -9,6 +9,11 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install xmlstarlet
+
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -65,3 +70,5 @@ jobs:
         shell: bash
         env:
           GITHUB_PASSWORD: ${{ secrets.PAT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

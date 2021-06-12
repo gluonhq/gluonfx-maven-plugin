@@ -11,7 +11,7 @@ cd gluonfx-maven-archetypes
 for f in ./gluonfx-archetype-* ; do
   # f is directory and not a symlink
   if [[  -d "$f" && ! -L "$f" ]]; then\
-    # Update <defaultValue> inside <requiredProperty> with key='client-maven-plugin-version'
+    # Update <defaultValue> inside <requiredProperty> with key='gluonfx-maven-plugin-version'
     xmlstarlet ed -P -L -u "//_:requiredProperty[@key='gluonfx-maven-plugin-version']/_:defaultValue" -v "$TAG" "$f"/$XML_LOCATION
   fi
 done
