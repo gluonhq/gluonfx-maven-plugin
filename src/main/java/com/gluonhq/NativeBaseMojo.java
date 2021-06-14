@@ -69,6 +69,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
+    Path outputDir;
+
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
@@ -111,9 +113,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "gluonfx.runtimeArgs")
     List<String> runtimeArgs;
 
-    @Parameter(readonly = true, required = true, defaultValue = "${project.build.directory}/gluonfx")
-    File outputDir;
-
     @Parameter(property = "gluonfx.mainClass", required = true)
     String mainClass;
 
@@ -146,8 +145,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                     " Either set GRAALVM_HOME as an environment variable or" +
                     " set graalvmHome in gluonfx-plugin configuration");
         }
+        outputDir = Path.of(project.getBuild().getDirectory(), Constants.GLUONFX_PATH);
         ProjectConfiguration substrateConfiguration = createSubstrateConfiguration();
-        return new SubstrateDispatcher(outputDir.toPath(), substrateConfiguration);
+        return new SubstrateDispatcher(outputDir, substrateConfiguration);
     }
 
     private ProjectConfiguration createSubstrateConfiguration() {
