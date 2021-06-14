@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2020, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ public class NativeCompileMojo extends NativeBaseMojo {
     public void execute() throws MojoExecutionException {
         getLog().debug("MainClassName = " + mainClass);
         getLog().debug("ProjectName = " + project.getName());
-        getLog().debug("BuildRoot = " + outputDir.toPath());
+        getLog().debug("BuildRoot = " + outputDir);
 
         boolean result = true;
         try {
