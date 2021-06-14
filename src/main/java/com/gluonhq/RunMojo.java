@@ -113,9 +113,8 @@ public class RunMojo extends NativeBaseMojo {
             throw new MojoExecutionException("Error reading pom", e);
         }
 
-        if (!project.getActiveProfiles().isEmpty()) {
-            final String activeProfiles = project.getActiveProfiles().stream().map(Profile::getId).collect(Collectors.joining(","));
-            getLog().warn(String.format("Active profile(s) '%s' will be ignored for 'client:run' goal on the host machine", activeProfiles));
+        if (!"host".equals(target)) {
+            getLog().warn(String.format("Target '%s' will be ignored for 'gluonfx:run' goal on the host machine", target));
         }
 
         invocationRequest.setPomFile(runPomFile);
