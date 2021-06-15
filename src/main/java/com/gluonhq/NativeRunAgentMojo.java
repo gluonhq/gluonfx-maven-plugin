@@ -37,6 +37,8 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Execute;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -64,6 +66,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Mojo(name = "runagent", requiresDependencyResolution = ResolutionScope.RUNTIME)
+@Execute(phase = LifecyclePhase.PROCESS_CLASSES)
 public class NativeRunAgentMojo extends NativeBaseMojo {
 
     private static final String AGENTLIB_NATIVE_IMAGE_AGENT_STRING =
