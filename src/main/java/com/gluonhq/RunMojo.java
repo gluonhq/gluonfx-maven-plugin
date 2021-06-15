@@ -66,12 +66,6 @@ public class RunMojo extends NativeBaseMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        try {
-            createSubstrateDispatcher();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Error creating Substrate Dispatcher", e);
-        }
 
         final InvocationRequest invocationRequest = new DefaultInvocationRequest();
         invocationRequest.setProfiles(project.getActiveProfiles().stream()
