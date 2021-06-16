@@ -36,10 +36,12 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
@@ -64,6 +66,12 @@ public class RunMojo extends NativeBaseMojo {
     private static final String POM_XML = "pom.xml";
     private static final String RUN_POM_XML = "runPom.xml";
 
+    /**
+     * The execution ID as defined in the POM.
+     */
+    @Parameter(defaultValue = "${mojoExecution}", readonly = true)
+    private MojoExecution execution;
+
     @Override
     public void execute() throws MojoExecutionException {
 
@@ -86,7 +94,7 @@ public class RunMojo extends NativeBaseMojo {
                             p.getArtifactId().equalsIgnoreCase("javafx-maven-plugin"))
                     .findFirst()
                     .orElseThrow(() -> new MojoExecutionException("No JavaFX plugin found"));
-            
+
             // 4. Check for Attach Dependencies and if Desktop is supported, add the classifier
             model.getDependencies().stream()
                     .filter(p -> p.getGroupId().equalsIgnoreCase(AttachArtifactResolver.DEPENDENCY_GROUP))
@@ -112,7 +120,11 @@ public class RunMojo extends NativeBaseMojo {
         }
 
         invocationRequest.setPomFile(runPomFile);
-        invocationRequest.setGoals(Collections.singletonList("javafx:run"));
+        if (execution == null) {
+            invocationRequest.setGoals(Collections.singletonList("javafx:run"));
+        } else {
+            invocationRequest.setGoals(Collections.singletonList("javafx:run@" + execution.getExecutionId()));
+        }
 
         final Invoker invoker = new DefaultInvoker();
         try {
