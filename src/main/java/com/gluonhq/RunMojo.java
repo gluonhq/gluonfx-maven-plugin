@@ -120,17 +120,17 @@ public class RunMojo extends NativeBaseMojo {
         }
 
         invocationRequest.setPomFile(runPomFile);
-        if (execution == null) {
-            invocationRequest.setGoals(Collections.singletonList("javafx:run"));
-        } else {
-            invocationRequest.setGoals(Collections.singletonList("javafx:run@" + execution.getExecutionId()));
+        String goal = "javafx:run";
+        if (execution != null) {
+            goal += "@" + execution.getExecutionId();
         }
+        invocationRequest.setGoals(Collections.singletonList(goal));
 
         final Invoker invoker = new DefaultInvoker();
         try {
             final InvocationResult invocationResult = invoker.execute(invocationRequest);
             if (invocationResult.getExitCode() != 0) {
-                throw new MojoExecutionException("Error, javafx:run failed", invocationResult.getExecutionException());
+                throw new MojoExecutionException("Error, " + goal + " failed", invocationResult.getExecutionException());
             }
         } catch (MavenInvocationException e) {
             e.printStackTrace();
