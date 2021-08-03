@@ -54,10 +54,12 @@ public class AttachArtifactResolver {
                 .map(d -> {
                     if (UTIL_ARTIFACT.equals(d.getArtifactId())) {
                         if (Constants.PROFILE_ANDROID.equals(target) ||
-                            Constants.PROFILE_IOS.equals(target)||
+                            Constants.PROFILE_IOS.equals(target) ||
                             Constants.PROFILE_IOS_SIM.equals(target)) {
+                            String utilTarget = Constants.PROFILE_IOS_SIM.equals(target) ?
+                                    Constants.PROFILE_IOS : target;
                             return new DefaultArtifact(d.getGroupId(), d.getArtifactId(),
-                                    target, d.getType(), d.getVersion());
+                                    utilTarget, d.getType(), d.getVersion());
                         }
                         return  null;
                     }
