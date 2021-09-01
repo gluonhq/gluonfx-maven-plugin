@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -193,10 +193,10 @@ public class MavenArtifactResolver {
         }
 
         CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(new Dependency(resolvedArtifact.getArtifact(), JavaScopes.COMPILE));
+        collectRequest.setRoot(new Dependency(resolvedArtifact.getArtifact(), JavaScopes.RUNTIME));
         collectRequest.setRepositories(remoteRepositories);
 
-        DependencyFilter classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
+        DependencyFilter classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.RUNTIME);
         DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFilter);
 
         List<ArtifactResult> artifactResults;

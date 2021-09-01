@@ -35,12 +35,14 @@ import com.gluonhq.substrate.Constants;
 import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import com.gluonhq.substrate.model.Triplet;
+import com.gluonhq.substrate.target.WebTargetConfiguration;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -174,6 +176,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
             case Constants.PROFILE_LINUX_AARCH64:
                 targetTriplet = new Triplet(Constants.Profile.LINUX_AARCH64);
                 break;
+            case Constants.PROFILE_WEB:
+                targetTriplet = new Triplet(Constants.Profile.WEB);
+                break;
             default:
                 throw new RuntimeException("No valid target found for " + target);
         }
@@ -214,7 +219,13 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
-        MavenArtifactResolver.initRepositories(project.getRepositories());
+        List<Repository> repositories = project.getRepositories();
+        Repository gluonRepository = new Repository();
+        gluonRepository.setId("Gluon");
+        gluonRepository.setUrl("https://nexus.gluonhq.com/nexus/content/repositories/releases");
+        repositories.add(gluonRepository);
+        MavenArtifactResolver.initRepositories(repositories);
+
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
                 .filter(d -> ALLOWED_DEPENDENCY_TYPES.stream().anyMatch(t -> t.equals(d.getType())))
@@ -240,6 +251,38 @@ public abstract class NativeBaseMojo extends AbstractMojo {
                 .filter(list::contains)
                 .forEach(list::remove);
 
+        // WEB
+        if (Constants.PROFILE_WEB.equals(target)) {
+            project.getArtifacts().stream()
+                    .filter(a -> "org.openjfx".equals(a.getGroupId()) && a.getClassifier() != null)
+                    .map(a -> new DefaultArtifact(a.getGroupId(), a.getArtifactId(),
+                            Constants.WEB_AOT_CLASSIFIER, "jar", a.getVersion()))
+                    .flatMap(a -> {
+                        Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a);
+                        if (resolve == null) {
+                            return Stream.empty();
+                        }
+                        return resolve.stream();
+                    })
+                    .distinct()
+                    .map(Artifact::getFile)
+                    .forEach(list::add);
+
+            WebTargetConfiguration.WEB_AOT_DEPENDENCIES.stream()
+                    .map(s -> s.split(":"))
+                    .map(a -> new DefaultArtifact(a[0], a[1],
+                            a.length == 4 ? a[3] : null, "jar", a[2]))
+                    .flatMap(a -> {
+                        Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a);
+                        if (resolve == null) {
+                            return Stream.empty();
+                        }
+                        return resolve.stream();
+                    })
+                    .distinct()
+                    .map(Artifact::getFile)
+                    .forEach(list::add);
+        }
         return list;
     }
 
