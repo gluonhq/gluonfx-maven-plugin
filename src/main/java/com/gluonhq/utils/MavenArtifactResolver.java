@@ -193,10 +193,10 @@ public class MavenArtifactResolver {
         }
 
         CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot(new Dependency(resolvedArtifact.getArtifact(), JavaScopes.RUNTIME));
+        collectRequest.setRoot(new Dependency(resolvedArtifact.getArtifact(), JavaScopes.COMPILE));
         collectRequest.setRepositories(remoteRepositories);
 
-        DependencyFilter classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.RUNTIME);
+        DependencyFilter classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
         DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFilter);
 
         List<ArtifactResult> artifactResults;
