@@ -50,6 +50,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.graph.DependencyFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -256,9 +257,11 @@ public abstract class NativeBaseMojo extends AbstractMojo {
             project.getArtifacts().stream()
                     .filter(a -> "org.openjfx".equals(a.getGroupId()) && a.getClassifier() != null)
                     .map(a -> new DefaultArtifact(a.getGroupId(), a.getArtifactId(),
-                            Constants.WEB_AOT_CLASSIFIER, "jar", a.getVersion()))
+                            Constants.WEB_AOT_CLASSIFIER, "jar", Constants.DEFAULT_JAVAFX_JS_SDK_VERSION))
                     .flatMap(a -> {
-                        Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a);
+                        DependencyFilter exclusions = (node, parents) ->
+                                !node.getArtifact().getClassifier().equals(Constants.WEB_AOT_CLASSIFIER);
+                        Set<Artifact> resolve = MavenArtifactResolver.getInstance().resolve(a, exclusions);
                         if (resolve == null) {
                             return Stream.empty();
                         }
