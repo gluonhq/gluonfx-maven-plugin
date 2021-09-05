@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Gluon
+ * Copyright (c) 2019, 2021, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -178,6 +178,18 @@ public class MavenArtifactResolver {
      * @return a set of existing artifacts
      */
     public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact) {
+        return resolve(artifact, null);
+    }
+
+    /**
+     * Finds a set of existing artifacts for a created artifact out of on some coordinates and
+     * classifier
+     *
+     * @param artifact the created artifact
+     * @param exclusionsFilter a filter that identifies artifacts that will be excluded, it can be null
+     * @return a set of existing artifacts
+     */
+    public Set<org.apache.maven.artifact.Artifact> resolve(Artifact artifact, DependencyFilter exclusionsFilter) {
         ArtifactResult resolvedArtifact;
         try {
             List<ArtifactRequest> artifactRequests = Arrays.asList(
@@ -196,7 +208,14 @@ public class MavenArtifactResolver {
         collectRequest.setRoot(new Dependency(resolvedArtifact.getArtifact(), JavaScopes.COMPILE));
         collectRequest.setRepositories(remoteRepositories);
 
-        DependencyFilter classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
+        DependencyFilter classpathFilter;
+        if (exclusionsFilter != null) {
+            classpathFilter = DependencyFilterUtils.andFilter(
+                    DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE),
+                    DependencyFilterUtils.notFilter(exclusionsFilter));
+        } else {
+            classpathFilter = DependencyFilterUtils.classpathFilter(JavaScopes.COMPILE);
+        }
         DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, classpathFilter);
 
         List<ArtifactResult> artifactResults;
