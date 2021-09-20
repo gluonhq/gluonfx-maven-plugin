@@ -44,7 +44,7 @@ public enum AttachService {
     BARCODE_SCAN,
     BATTERY,
     BLE,
-    BROWSER,
+    BROWSER(true /* desktopSupported */),
     CACHE(true /* desktopSupported */),
     COMPASS,
     CONNECTIVITY,
@@ -65,6 +65,7 @@ public enum AttachService {
     SHARE,
     STATUSBAR,
     STORAGE(true /* desktopSupported */),
+    VERSION(true /* desktopSupported */),
     VIBRATION,
     VIDEO;
 
