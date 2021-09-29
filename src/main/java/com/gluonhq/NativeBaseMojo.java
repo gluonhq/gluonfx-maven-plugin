@@ -137,6 +137,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "gluonfx.remoteDir")
     String remoteDir;
 
+    @Parameter(property = "gluonfx.appIdentifier")
+    String appIdentifier;
+
     @Parameter(property = "gluonfx.releaseConfiguration")
     ReleaseConfiguration releaseConfiguration;
 
@@ -194,7 +197,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setCompilerArgs(nativeImageArgs);
         clientConfig.setRuntimeArgs(runtimeArgs);
         clientConfig.setReflectionList(reflectionList);
-        clientConfig.setAppId(project.getGroupId() + "." + project.getArtifactId());
+        clientConfig.setAppId(appIdentifier != null ? appIdentifier :
+                project.getGroupId() + "." + project.getArtifactId());
         clientConfig.setAppName(project.getName());
         clientConfig.setVerbose("true".equals(verbose));
         clientConfig.setUsePrismSW("true".equals(enableSWRendering));
