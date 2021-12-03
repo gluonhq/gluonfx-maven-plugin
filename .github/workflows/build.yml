@@ -22,6 +22,9 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
 
+      - name: Build Project
+        run: mvn clean verify
+
       - name: Publish Snapshots
         if: github.ref == 'refs/heads/master'
         run: |
