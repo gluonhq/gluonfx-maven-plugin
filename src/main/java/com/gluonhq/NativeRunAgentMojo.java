@@ -75,6 +75,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
     private static final List<String> AGENTLIB_EXCLUSION_RULES = Arrays.asList(
             "com.sun.glass.ui.mac.*", "com.sun.prism.es2.MacGLFactory",
             "com.sun.glass.ui.gtk.*", "com.sun.prism.es2.X11GLFactory",
+            "com.sun.glass.ui.win.*", "com.sun.prism.d3d.*", "com.sun.scenario.effect.impl.hw.d3d.*",
             "com.gluonhq.attach.**"
     );
 
