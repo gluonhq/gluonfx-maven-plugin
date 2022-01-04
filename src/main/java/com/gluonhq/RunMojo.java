@@ -72,7 +72,7 @@ public class RunMojo extends NativeBaseMojo {
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}/pom.xml")
     String pom;
 
-    @Parameter(readonly = true, required = true, defaultValue = "${project.basedir}/runPom.xml")
+    @Parameter(readonly = true, required = true, defaultValue = "${basedir}/runPom.xml")
     String runPom;
 
     @Override

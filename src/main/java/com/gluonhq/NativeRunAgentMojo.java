@@ -88,7 +88,7 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}/src/main/resources/META-INF/native-image/filter-file.json")
     String agentFilter;
 
-    @Parameter(readonly = true, required = true, defaultValue = "${project.basedir}/agentPom.xml")
+    @Parameter(readonly = true, required = true, defaultValue = "${basedir}/agentPom.xml")
     String agentPom;
 
     @Override
