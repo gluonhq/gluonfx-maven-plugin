@@ -63,14 +63,17 @@ import java.util.stream.Collectors;
 @Execute(phase = LifecyclePhase.PROCESS_CLASSES)
 public class RunMojo extends NativeBaseMojo {
 
-    private static final String POM_XML = "pom.xml";
-    private static final String RUN_POM_XML = "runPom.xml";
-
     /**
      * The execution ID as defined in the POM.
      */
     @Parameter(defaultValue = "${mojoExecution}", readonly = true)
     private MojoExecution execution;
+
+    @Parameter(readonly = true, required = true, defaultValue = "${basedir}/pom.xml")
+    String pom;
+
+    @Parameter(readonly = true, required = true, defaultValue = "${project.basedir}/runPom.xml")
+    String runPom;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -82,10 +85,13 @@ public class RunMojo extends NativeBaseMojo {
         invocationRequest.setProperties(session.getRequest().getUserProperties());
 
         // 1. Read pom
-        File pomFile = new File(POM_XML);
+        File pomFile = new File(pom);
+        if (!pomFile.exists()) {
+            throw new MojoExecutionException("Error: pom not found at " + pomFile);
+        }
         // 2. Create temporary pom file
-        File runPomFile = new File(RUN_POM_XML);
-        try (InputStream is = new FileInputStream(POM_XML)) {
+        File runPomFile = new File(runPom);
+        try (InputStream is = new FileInputStream(pomFile)) {
             // 3. Create model from current pom
             Model model = new MavenXpp3Reader().read(is);
 
