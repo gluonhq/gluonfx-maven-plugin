@@ -372,6 +372,8 @@ public class ReleaseConfiguration {
                 ", skipSigning=" + skipSigning +
                 ", simulatorDevice='" + simulatorDevice + '\'' +
                 ", appLabel='" + appLabel + '\'' +
+                ", appDescription='" + appDescription + '\'' +
+                ", vendor='" + vendor + '\'' +
                 ", versionCode='" + versionCode + '\'' +
                 ", versionName='" + versionName + '\'' +
                 ", providedKeyStorePath='" + providedKeyStorePath + '\'' +
@@ -385,6 +387,8 @@ public class ReleaseConfiguration {
         com.gluonhq.substrate.model.ReleaseConfiguration release = new com.gluonhq.substrate.model.ReleaseConfiguration();
 
         release.setPackageType(getPackageType());
+        release.setAppDescription(getAppDescription());
+        release.setVendor(getVendor());
         // macOS
         release.setMacAppStore(isMacAppStore());
         release.setMacSigningUserName(getMacSigningUserName());
@@ -405,9 +409,6 @@ public class ReleaseConfiguration {
         release.setProvidedKeyStorePassword(getProvidedKeyStorePassword());
         release.setProvidedKeyAlias(getProvidedKeyAlias());
         release.setProvidedKeyAliasPassword(getProvidedKeyAliasPassword());
-        // Windows
-        release.setAppDescription(getAppDescription());
-        release.setVendor(getVendor());
 
         return release;
     }
