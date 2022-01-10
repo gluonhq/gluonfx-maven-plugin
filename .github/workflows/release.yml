@@ -49,6 +49,7 @@ jobs:
         uses: softprops/action-gh-release@v0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
 
       - name: Commit next development version
         if: steps.deploy.outputs.exit_code == 0
