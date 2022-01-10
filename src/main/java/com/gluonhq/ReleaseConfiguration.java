@@ -48,6 +48,19 @@ public class ReleaseConfiguration {
      */
     private String packageType;
 
+    /**
+     * A short description about the application
+     *
+     * Default: Empty string.
+     */
+    private String appDescription;
+
+    /**
+     * Vendor of the application.
+     * Ideally, name of the company or individual developing the application.
+     */
+    private String vendor;
+
     // macOS
 
     /**
@@ -139,13 +152,6 @@ public class ReleaseConfiguration {
     private String appLabel;
 
     /**
-     * A short description about the application
-     *
-     * Default: Empty string.
-     */
-    private String appDescription;
-
-    /**
      * A positive integer used as an internal version number
      *
      * Default: 1
@@ -159,12 +165,6 @@ public class ReleaseConfiguration {
      * Default: 1.0
      */
     private String versionName;
-
-    /**
-     * Vendor of the application.
-     * Idly name of the company or individual developing the application.
-     */
-    private String vendor;
 
     /**
      * A string with the path to a keystore file that can be used to sign
