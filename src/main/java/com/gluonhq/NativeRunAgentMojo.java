@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Gluon
+ * Copyright (c) 2021, 2022, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,9 +73,9 @@ public class NativeRunAgentMojo extends NativeBaseMojo {
             "-agentlib:native-image-agent=access-filter-file=src/main/resources/META-INF/native-image/filter-file.json,config-merge-dir=src/main/resources/META-INF/native-image";
 
     private static final List<String> AGENTLIB_EXCLUSION_RULES = Arrays.asList(
-            "com.sun.glass.ui.mac.*", "com.sun.prism.es2.MacGLFactory",
-            "com.sun.glass.ui.gtk.*", "com.sun.prism.es2.X11GLFactory",
-            "com.sun.glass.ui.win.*", "com.sun.prism.d3d.*", "com.sun.scenario.effect.impl.hw.d3d.*",
+            "com.sun.glass.ui.mac.*", "com.sun.glass.ui.gtk.*", "com.sun.glass.ui.win.*",
+            "com.sun.prism.es2.*", "com.sun.prism.d3d.*",
+            "com.sun.scenario.effect.impl.es2.*", "com.sun.scenario.effect.impl.hw.d3d.*",
             "com.gluonhq.attach.**"
     );
 
