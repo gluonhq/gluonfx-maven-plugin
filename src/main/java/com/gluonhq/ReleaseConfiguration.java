@@ -30,14 +30,13 @@ package com.gluonhq;
 public class ReleaseConfiguration {
 
     public static final String DEFAULT_BUNDLE_VERSION = "1.0";
-    public static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
     public static final String DEFAULT_MAC_APP_CATEGORY = "public.app-category.utilities";
 
-    public static final String DEFAULT_CODE_VERSION = "1";
-    public static final String DEFAULT_CODE_NAME = "1.0";
-    public static final String DEFAULT_DEBUG_KEY_STORE_PASSWORD = "android";
-    public static final String DEFAULT_DEBUG_KEY_ALIAS = "androiddebugkey";
-    public static final String DEFAULT_DEBUG_KEY_ALIAS_PASSWORD = "android";
+    private static final String DEFAULT_APP_DESCRIPTION = "Default description";
+    private static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
+    private static final String DEFAULT_CODE_VERSION = "1";
+    private static final String DEFAULT_VENDOR = "Unknown";
+    private static final String DEFAULT_VERSION = "1.0";
 
     /**
      * Type of package bundle that can be generated.
@@ -60,6 +59,14 @@ public class ReleaseConfiguration {
      * Ideally, name of the company or individual developing the application.
      */
     private String vendor;
+
+    /**
+     * A string used as the version number shown to users, like
+     * <major>.<minor>.<point>
+     *
+     * Default: 1.0
+     */
+    private String version;
 
     // macOS
 
@@ -159,14 +166,6 @@ public class ReleaseConfiguration {
     private String versionCode;
 
     /**
-     * A string used as the version number shown to users, like
-     * <major>.<minor>.<point>
-     *
-     * Default: 1.0
-     */
-    private String versionName;
-
-    /**
      * A string with the path to a keystore file that can be used to sign
      * the Android apk.
      *
@@ -219,6 +218,14 @@ public class ReleaseConfiguration {
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public boolean isMacAppStore() {
@@ -317,14 +324,6 @@ public class ReleaseConfiguration {
         this.versionCode = versionCode;
     }
 
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
-    }
-
     public String getProvidedKeyStorePath() {
         return providedKeyStorePath;
     }
@@ -363,6 +362,7 @@ public class ReleaseConfiguration {
                 "packageType=" + packageType +
                 ", appDescription='" + appDescription + '\'' +
                 ", vendor='" + vendor + '\'' +
+                ", version='" + version + '\'' +
                 ", macAppStore=" + macAppStore +
                 ", macSigningUserName=" + macSigningUserName +
                 ", macAppCategory=" + macAppCategory +
@@ -375,7 +375,6 @@ public class ReleaseConfiguration {
                 ", simulatorDevice='" + simulatorDevice + '\'' +
                 ", appLabel='" + appLabel + '\'' +
                 ", versionCode='" + versionCode + '\'' +
-                ", versionName='" + versionName + '\'' +
                 ", providedKeyStorePath='" + providedKeyStorePath + '\'' +
                 ", providedKeyStorePassword='" + providedKeyStorePassword + '\'' +
                 ", providedKeyAlias='" + providedKeyAlias + '\'' +
@@ -389,6 +388,7 @@ public class ReleaseConfiguration {
         release.setPackageType(getPackageType());
         release.setAppDescription(getAppDescription());
         release.setVendor(getVendor());
+        release.setVersion(getVersion());
         // macOS
         release.setMacAppStore(isMacAppStore());
         release.setMacSigningUserName(getMacSigningUserName());
@@ -404,7 +404,6 @@ public class ReleaseConfiguration {
         // Android
         release.setAppLabel(getAppLabel());
         release.setVersionCode(getVersionCode());
-        release.setVersionName(getVersionName());
         release.setProvidedKeyStorePath(getProvidedKeyStorePath());
         release.setProvidedKeyStorePassword(getProvidedKeyStorePassword());
         release.setProvidedKeyAlias(getProvidedKeyAlias());
