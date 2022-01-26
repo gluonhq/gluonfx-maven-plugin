@@ -29,14 +29,15 @@ package com.gluonhq;
 
 public class ReleaseConfiguration {
 
-    public static final String DEFAULT_BUNDLE_VERSION = "1.0";
-    public static final String DEFAULT_MAC_APP_CATEGORY = "public.app-category.utilities";
-
-    private static final String DEFAULT_APP_DESCRIPTION = "Default description";
-    private static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
-    private static final String DEFAULT_CODE_VERSION = "1";
+    private static final String DEFAULT_DESCRIPTION = "Default description";
     private static final String DEFAULT_VENDOR = "Unknown";
     private static final String DEFAULT_VERSION = "1.0";
+
+    public static final String DEFAULT_MAC_APP_CATEGORY = "public.app-category.utilities";
+    public static final String DEFAULT_BUNDLE_VERSION = "1.0";
+    private static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
+
+    private static final String DEFAULT_VERSION_CODE = "1";
 
     /**
      * Type of package bundle that can be generated.
@@ -52,7 +53,7 @@ public class ReleaseConfiguration {
      *
      * Default: Empty string.
      */
-    private String appDescription;
+    private String description;
 
     /**
      * Vendor of the application.
@@ -166,6 +167,14 @@ public class ReleaseConfiguration {
     private String versionCode;
 
     /**
+     * A string used as the version number shown to users, like
+     * <major>.<minor>.<point>
+     *
+     * Default: 1.0
+     */
+    private String versionName;
+
+    /**
      * A string with the path to a keystore file that can be used to sign
      * the Android apk.
      *
@@ -204,12 +213,12 @@ public class ReleaseConfiguration {
         return packageType;
     }
 
-    public String getAppDescription() {
-        return appDescription == null ? "" : appDescription;
+    public String getDescription() {
+        return description == null ? "" : description;
     }
 
-    public void setAppDescription(String appDescription) {
-        this.appDescription = appDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getVendor() {
@@ -324,6 +333,14 @@ public class ReleaseConfiguration {
         this.versionCode = versionCode;
     }
 
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
     public String getProvidedKeyStorePath() {
         return providedKeyStorePath;
     }
@@ -360,7 +377,7 @@ public class ReleaseConfiguration {
     public String toString() {
         return "ReleaseConfiguration{" +
                 "packageType=" + packageType +
-                ", appDescription='" + appDescription + '\'' +
+                ", description='" + description + '\'' +
                 ", vendor='" + vendor + '\'' +
                 ", version='" + version + '\'' +
                 ", macAppStore=" + macAppStore +
@@ -375,6 +392,7 @@ public class ReleaseConfiguration {
                 ", simulatorDevice='" + simulatorDevice + '\'' +
                 ", appLabel='" + appLabel + '\'' +
                 ", versionCode='" + versionCode + '\'' +
+                ", versionName='" + versionName + '\'' +
                 ", providedKeyStorePath='" + providedKeyStorePath + '\'' +
                 ", providedKeyStorePassword='" + providedKeyStorePassword + '\'' +
                 ", providedKeyAlias='" + providedKeyAlias + '\'' +
@@ -386,7 +404,7 @@ public class ReleaseConfiguration {
         com.gluonhq.substrate.model.ReleaseConfiguration release = new com.gluonhq.substrate.model.ReleaseConfiguration();
 
         release.setPackageType(getPackageType());
-        release.setAppDescription(getAppDescription());
+        release.setDescription(getDescription());
         release.setVendor(getVendor());
         release.setVersion(getVersion());
         // macOS
@@ -404,6 +422,7 @@ public class ReleaseConfiguration {
         // Android
         release.setAppLabel(getAppLabel());
         release.setVersionCode(getVersionCode());
+        release.setVersionName(getVersionName());
         release.setProvidedKeyStorePath(getProvidedKeyStorePath());
         release.setProvidedKeyStorePassword(getProvidedKeyStorePassword());
         release.setProvidedKeyAlias(getProvidedKeyAlias());
