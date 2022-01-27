@@ -29,15 +29,15 @@ package com.gluonhq;
 
 public class ReleaseConfiguration {
 
-    public static final String DEFAULT_BUNDLE_VERSION = "1.0";
-    public static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
-    public static final String DEFAULT_MAC_APP_CATEGORY = "public.app-category.utilities";
+    private static final String DEFAULT_DESCRIPTION = "Default description";
+    private static final String DEFAULT_VENDOR = "Unknown";
+    private static final String DEFAULT_VERSION = "1.0";
 
-    public static final String DEFAULT_CODE_VERSION = "1";
-    public static final String DEFAULT_CODE_NAME = "1.0";
-    public static final String DEFAULT_DEBUG_KEY_STORE_PASSWORD = "android";
-    public static final String DEFAULT_DEBUG_KEY_ALIAS = "androiddebugkey";
-    public static final String DEFAULT_DEBUG_KEY_ALIAS_PASSWORD = "android";
+    public static final String DEFAULT_MAC_APP_CATEGORY = "public.app-category.utilities";
+    public static final String DEFAULT_BUNDLE_VERSION = "1.0";
+    private static final String DEFAULT_BUNDLE_SHORT_VERSION = "1.0";
+
+    private static final String DEFAULT_VERSION_CODE = "1";
 
     /**
      * Type of package bundle that can be generated.
@@ -53,13 +53,21 @@ public class ReleaseConfiguration {
      *
      * Default: Empty string.
      */
-    private String appDescription;
+    private String description;
 
     /**
      * Vendor of the application.
      * Ideally, name of the company or individual developing the application.
      */
     private String vendor;
+
+    /**
+     * A string used as the version number shown to users, like
+     * <major>.<minor>.<point>
+     *
+     * Default: 1.0
+     */
+    private String version;
 
     // macOS
 
@@ -205,12 +213,12 @@ public class ReleaseConfiguration {
         return packageType;
     }
 
-    public String getAppDescription() {
-        return appDescription == null ? "" : appDescription;
+    public String getDescription() {
+        return description == null ? "" : description;
     }
 
-    public void setAppDescription(String appDescription) {
-        this.appDescription = appDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getVendor() {
@@ -219,6 +227,14 @@ public class ReleaseConfiguration {
 
     public void setVendor(String vendor) {
         this.vendor = vendor;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public boolean isMacAppStore() {
@@ -361,8 +377,9 @@ public class ReleaseConfiguration {
     public String toString() {
         return "ReleaseConfiguration{" +
                 "packageType=" + packageType +
-                ", appDescription='" + appDescription + '\'' +
+                ", description='" + description + '\'' +
                 ", vendor='" + vendor + '\'' +
+                ", version='" + version + '\'' +
                 ", macAppStore=" + macAppStore +
                 ", macSigningUserName=" + macSigningUserName +
                 ", macAppCategory=" + macAppCategory +
@@ -387,8 +404,9 @@ public class ReleaseConfiguration {
         com.gluonhq.substrate.model.ReleaseConfiguration release = new com.gluonhq.substrate.model.ReleaseConfiguration();
 
         release.setPackageType(getPackageType());
-        release.setAppDescription(getAppDescription());
+        release.setDescription(getDescription());
         release.setVendor(getVendor());
+        release.setVersion(getVersion());
         // macOS
         release.setMacAppStore(isMacAppStore());
         release.setMacSigningUserName(getMacSigningUserName());
