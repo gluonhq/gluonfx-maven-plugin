@@ -48,7 +48,7 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           generate_release_notes: true
 
       - name: Commit next development version
