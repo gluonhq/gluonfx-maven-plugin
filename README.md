@@ -14,7 +14,7 @@ Check the requirements for the [target platform](https://docs.gluonhq.com/#_plat
 
 ## Getting started
 
-Follow this [guide](https://docs.gluonhq.com/#_the_gluon_client_plugin_for_maven) on how to apply the plugin and use the different goals.
+Follow this [guide](https://docs.gluonhq.com/#_gluonfx_plugin_for_maven) on how to apply the plugin and use the different goals.
 
 ## Documentation and samples
 
