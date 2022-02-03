@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021, Gluon
+ * Copyright (c) 2019, 2022, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -113,6 +113,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     @Parameter(property = "gluonfx.nativeImageArgs")
     List<String> nativeImageArgs;
 
+    @Parameter(property = "gluonfx.linkerArgs")
+    List<String> linkerArgs;
+
     @Parameter(property = "gluonfx.runtimeArgs")
     List<String> runtimeArgs;
 
@@ -195,6 +198,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         clientConfig.setResourcesList(resourcesList);
         clientConfig.setJniList(jniList);
         clientConfig.setCompilerArgs(nativeImageArgs);
+        clientConfig.setLinkerArgs(linkerArgs);
         clientConfig.setRuntimeArgs(runtimeArgs);
         clientConfig.setReflectionList(reflectionList);
         clientConfig.setAppId(appIdentifier != null ? appIdentifier :
