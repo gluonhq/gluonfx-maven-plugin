@@ -46,7 +46,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v0
+        uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.PAT }}
           generate_release_notes: true
