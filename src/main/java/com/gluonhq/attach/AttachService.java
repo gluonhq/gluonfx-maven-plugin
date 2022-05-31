@@ -65,6 +65,7 @@ public enum AttachService {
     SHARE,
     STATUSBAR,
     STORAGE(true /* desktopSupported */),
+    STORE_REVIEW,
     VERSION(true /* desktopSupported */),
     VIBRATION,
     VIDEO;
