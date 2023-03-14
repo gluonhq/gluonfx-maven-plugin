@@ -54,7 +54,7 @@ public class NativeStaticLibMojo extends NativeBaseMojo {
         }
 
         if (!result) {
-            throw new MojoExecutionException("Native shared library failed");
+            throw new MojoExecutionException("Native static library failed");
         }
     }
 }
