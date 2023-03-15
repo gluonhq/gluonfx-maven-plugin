@@ -160,8 +160,8 @@ public abstract class NativeBaseMojo extends AbstractMojo {
         String mavenVersion = runtimeInformation.getMavenVersion();
         Version version = new Version(mavenVersion);
         if (version.compareTo(MAX_SUPPORTED_MAVEN_VERSION) > 0) {
-            throw new MojoExecutionException("Maven version " + mavenVersion + " is not currently supported." +
-                    "Please downgrade your Maven version to " + MAX_SUPPORTED_MAVEN_VERSION);
+            throw new MojoExecutionException("Maven version " + mavenVersion + " is not currently supported by the GluonFX Maven Plugin.\n" +
+                    "Please downgrade your Maven version to " + MAX_SUPPORTED_MAVEN_VERSION + " and then try again.\n");
         }
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
