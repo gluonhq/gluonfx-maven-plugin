@@ -75,7 +75,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
     // TODO: Remove this restriction when MavenArtifactResolver works with Maven 3.9.0+
-    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 8, 7);
+    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 8, 8);
 
     Path outputDir;
 
