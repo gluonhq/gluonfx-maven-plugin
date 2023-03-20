@@ -65,7 +65,7 @@ jobs:
           git push https://gluon-bot:$PAT@github.com/$GITHUB_REPOSITORY HEAD:master
         shell: bash
         env:
-          PAT: ${{ secrets.GITHUB_TOKEN }}
+          PAT: ${{ secrets.PAT }}
 
       - name: Update projects
         if: steps.deploy.outputs.exit_code == 0
@@ -74,6 +74,6 @@ jobs:
           bash $GITHUB_WORKSPACE/.github/scripts/release.sh
         shell: bash
         env:
-          GITHUB_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PASSWORD: ${{ secrets.PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
