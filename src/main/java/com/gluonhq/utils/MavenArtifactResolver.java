@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021, Gluon
+ * Copyright (c) 2019, 2023, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -149,6 +149,7 @@ public class MavenArtifactResolver {
         instance = new MavenArtifactResolver(repositories);
     }
 
+    // TODO: Find an alternative, as this only works up until Maven 3.8.7.
     private RepositorySystem createRepositorySystem() {
         DefaultServiceLocator serviceLocator = MavenRepositorySystemUtils.newServiceLocator();
         serviceLocator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2022, Gluon
+ * Copyright (c) 2019, 2023, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.substrate.target.WebTargetConfiguration;
+import com.gluonhq.substrate.util.Version;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
@@ -49,6 +50,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.rtinfo.RuntimeInformation;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.DependencyFilter;
 
@@ -72,6 +74,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
+    // TODO: Remove this restriction when MavenArtifactResolver works with Maven 3.9.0+
+    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 8, 8);
+
     Path outputDir;
 
     @Parameter(defaultValue = "${project}", readonly = true)
@@ -82,6 +87,9 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     @Component
     BuildPluginManager pluginManager;
+
+    @Component
+    private RuntimeInformation runtimeInformation;
 
     @Parameter(readonly = true, required = true, defaultValue = "${basedir}")
     File basedir;
@@ -149,6 +157,12 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private ProcessDestroyer processDestroyer;
 
     public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
+        String mavenVersion = runtimeInformation.getMavenVersion();
+        Version version = new Version(mavenVersion);
+        if (version.compareTo(MAX_SUPPORTED_MAVEN_VERSION) > 0) {
+            throw new MojoExecutionException("Maven version " + mavenVersion + " is not currently supported by the GluonFX Maven Plugin.\n" +
+                    "Please downgrade your Maven version to " + MAX_SUPPORTED_MAVEN_VERSION + " and then try again.\n");
+        }
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
