@@ -48,7 +48,7 @@
     <javadoc.plugin.version>3.5.0</javadoc.plugin.version>
     <gpg.plugin.version>3.1.0</gpg.plugin.version>
     <maven.resolver.version>1.7.3</maven.resolver.version>
-    <substrate.version>0.0.62-SNAPSHOT</substrate.version>
+    <substrate.version>0.0.63</substrate.version>
   </properties>
 
   <dependencies>
