@@ -51,8 +51,11 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.rtinfo.RuntimeInformation;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.repository.RemoteRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,13 +77,30 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
-    // TODO: Remove this restriction when MavenArtifactResolver works with Maven 3.9.0+
-    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 8, 8);
+    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 9, 9);
 
     Path outputDir;
 
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
+
+    /**
+     * The entry point to Maven Artifact Resolver
+     */
+    @Component
+    private RepositorySystem repoSystem;
+
+    /**
+     * The current repository/network configuration of Maven.
+     */
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    private RepositorySystemSession repoSession;
+
+    /**
+     * The project's remote repositories to use for the resolution.
+     */
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    private List<RemoteRepository> remoteRepos;
 
     @Parameter(defaultValue = "${session}", readonly = true)
     MavenSession session;
@@ -242,12 +262,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
-        List<Repository> repositories = project.getRepositories();
-        Repository gluonRepository = new Repository();
-        gluonRepository.setId("Gluon");
-        gluonRepository.setUrl("https://nexus.gluonhq.com/nexus/content/repositories/releases");
-        repositories.add(gluonRepository);
-        MavenArtifactResolver.initRepositories(repositories);
+        MavenArtifactResolver.initRepositories(repoSystem, repoSession, remoteRepos);
 
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())
