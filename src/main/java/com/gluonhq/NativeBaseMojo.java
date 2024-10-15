@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2023, Gluon
+ * Copyright (c) 2019, 2024, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,14 +36,12 @@ import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.substrate.target.WebTargetConfiguration;
-import com.gluonhq.substrate.util.Version;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -76,8 +74,6 @@ import static com.gluonhq.attach.AttachArtifactResolver.UTIL_ARTIFACT;
 public abstract class NativeBaseMojo extends AbstractMojo {
 
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
-
-    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 9, 9);
 
     Path outputDir;
 
@@ -177,12 +173,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private ProcessDestroyer processDestroyer;
 
     public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
-        String mavenVersion = runtimeInformation.getMavenVersion();
-        Version version = new Version(mavenVersion);
-        if (version.compareTo(MAX_SUPPORTED_MAVEN_VERSION) > 0) {
-            throw new MojoExecutionException("Maven version " + mavenVersion + " is not currently supported by the GluonFX Maven Plugin.\n" +
-                    "Please downgrade your Maven version to " + MAX_SUPPORTED_MAVEN_VERSION + " and then try again.\n");
-        }
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
