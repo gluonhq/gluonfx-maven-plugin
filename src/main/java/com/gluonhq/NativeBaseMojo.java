@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2023, Gluon
+ * Copyright (c) 2019, 2024, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,14 +36,12 @@ import com.gluonhq.substrate.ProjectConfiguration;
 import com.gluonhq.substrate.SubstrateDispatcher;
 import com.gluonhq.substrate.model.Triplet;
 import com.gluonhq.substrate.target.WebTargetConfiguration;
-import com.gluonhq.substrate.util.Version;
 import com.gluonhq.utils.MavenArtifactResolver;
 import org.apache.commons.exec.ProcessDestroyer;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -51,8 +49,11 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.rtinfo.RuntimeInformation;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.repository.RemoteRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,13 +75,28 @@ public abstract class NativeBaseMojo extends AbstractMojo {
 
     private static final List<String> ALLOWED_DEPENDENCY_TYPES = Collections.singletonList("jar");
 
-    // TODO: Remove this restriction when MavenArtifactResolver works with Maven 3.9.0+
-    private static final Version MAX_SUPPORTED_MAVEN_VERSION = new Version(3, 8, 8);
-
     Path outputDir;
 
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
+
+    /**
+     * The entry point to Maven Artifact Resolver
+     */
+    @Component
+    private RepositorySystem repoSystem;
+
+    /**
+     * The current repository/network configuration of Maven.
+     */
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    private RepositorySystemSession repoSession;
+
+    /**
+     * The project's remote repositories to use for the resolution.
+     */
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    private List<RemoteRepository> remoteRepos;
 
     @Parameter(defaultValue = "${session}", readonly = true)
     MavenSession session;
@@ -157,12 +173,6 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     private ProcessDestroyer processDestroyer;
 
     public SubstrateDispatcher createSubstrateDispatcher() throws IOException, MojoExecutionException {
-        String mavenVersion = runtimeInformation.getMavenVersion();
-        Version version = new Version(mavenVersion);
-        if (version.compareTo(MAX_SUPPORTED_MAVEN_VERSION) > 0) {
-            throw new MojoExecutionException("Maven version " + mavenVersion + " is not currently supported by the GluonFX Maven Plugin.\n" +
-                    "Please downgrade your Maven version to " + MAX_SUPPORTED_MAVEN_VERSION + " and then try again.\n");
-        }
         if (getGraalvmHome().isEmpty()) {
             throw new MojoExecutionException("GraalVM installation directory not found." +
                     " Either set GRAALVM_HOME as an environment variable or" +
@@ -242,12 +252,7 @@ public abstract class NativeBaseMojo extends AbstractMojo {
     }
 
     private List<File> getClasspathElements(MavenProject project) {
-        List<Repository> repositories = project.getRepositories();
-        Repository gluonRepository = new Repository();
-        gluonRepository.setId("Gluon");
-        gluonRepository.setUrl("https://nexus.gluonhq.com/nexus/content/repositories/releases");
-        repositories.add(gluonRepository);
-        MavenArtifactResolver.initRepositories(repositories);
+        MavenArtifactResolver.initRepositories(repoSystem, repoSession, remoteRepos);
 
         List<Artifact> attachDependencies = getAttachDependencies();
         List<File> list = Stream.concat(project.getArtifacts().stream(), attachDependencies.stream())

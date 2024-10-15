@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2023, Gluon
+ * Copyright (c) 2019, 2024, Gluon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,45 +31,28 @@
 package com.gluonhq.utils;
 
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.model.Repository;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
-import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_WARN;
-import static org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_DAILY;
-import static org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER;
 
 public class MavenArtifactResolver {
 
@@ -87,7 +70,7 @@ public class MavenArtifactResolver {
      *
      * If the instance hasn't been created yet, it will throw an
      * {@code IllegalStateException}. To prevent this,
-     * {@link #initRepositories(List)} has to be called first.
+     * {@link #initRepositories(RepositorySystem, RepositorySystemSession, List)} has to be called first.
      *
      * @return an instance of MavenArtifactResolver
      */
@@ -98,77 +81,25 @@ public class MavenArtifactResolver {
         return instance;
     }
 
-    private MavenArtifactResolver(List<Repository> repositories) {
-        repositorySystem = createRepositorySystem();
-        systemSession = createRepositorySystemSession(repositorySystem, DEFAULT_LOCAL_REPO);
-        remoteRepositories = new LinkedList<>();
-        repositories.forEach(r -> {
-            org.apache.maven.model.RepositoryPolicy releases = r.getReleases();
-            RepositoryPolicy releasesRepositoryPolicy = null;
-            if (releases != null) {
-                releasesRepositoryPolicy = new RepositoryPolicy(releases.isEnabled(),
-                        releases.getUpdatePolicy() == null ? UPDATE_POLICY_NEVER : releases.getUpdatePolicy(),
-                        releases.getChecksumPolicy());
-            }
-            RepositoryPolicy snapshotsRepositoryPolicy = null;
-            org.apache.maven.model.RepositoryPolicy snapshots = r.getSnapshots();
-            if (snapshots != null) {
-                snapshotsRepositoryPolicy = new RepositoryPolicy(snapshots.isEnabled(),
-                        snapshots.getUpdatePolicy() == null ? UPDATE_POLICY_NEVER : snapshots.getUpdatePolicy(),
-                        snapshots.getChecksumPolicy());
-            }
-            if (releasesRepositoryPolicy == null && snapshotsRepositoryPolicy == null) {
-                if (r.getUrl().toLowerCase(Locale.ROOT).contains("/release")) {
-                    releasesRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
-                    snapshotsRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
-                } else if (r.getUrl().toLowerCase(Locale.ROOT).contains("/snapshot")) {
-                    releasesRepositoryPolicy = new RepositoryPolicy(false, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
-                    snapshotsRepositoryPolicy = new RepositoryPolicy(true, UPDATE_POLICY_DAILY, CHECKSUM_POLICY_WARN);
-                }
-            }
-
-            RemoteRepository repository = new RemoteRepository
-                .Builder(r.getId(), "default", r.getUrl())
-                    .setReleasePolicy(releasesRepositoryPolicy)
-                    .setSnapshotPolicy(snapshotsRepositoryPolicy)
-                    .build();
-            remoteRepositories.add(repository);
-        });
+    private MavenArtifactResolver(RepositorySystem repositorySystem, RepositorySystemSession systemSession, List<RemoteRepository> repositories) {
+        this.repositorySystem = repositorySystem;
+        this.systemSession = systemSession;
+        this.remoteRepositories = repositories;
     }
 
     /**
      * Creates and initializes a new instance with a list of remote
      * repositories, only if such instance doesn't already exist
      *
-     * @param repositories a list of remote repositories
+     * @param repositorySystem The entry point to Maven Artifact Resolver
+     * @param systemSession The current repository/network configuration of Maven
+     * @param repositories The current list of remote repositories
      */
-    public static void initRepositories(List<Repository> repositories) {
+    public static void initRepositories(RepositorySystem repositorySystem, RepositorySystemSession systemSession, List<RemoteRepository> repositories) {
         if (instance != null) {
             return;
         }
-        instance = new MavenArtifactResolver(repositories);
-    }
-
-    // TODO: Find an alternative, as this only works up until Maven 3.8.7.
-    private RepositorySystem createRepositorySystem() {
-        DefaultServiceLocator serviceLocator = MavenRepositorySystemUtils.newServiceLocator();
-        serviceLocator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
-        serviceLocator.addService(TransporterFactory.class, FileTransporterFactory.class);
-        serviceLocator.addService(TransporterFactory.class, HttpTransporterFactory.class);
-        serviceLocator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
-            @Override
-            public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
-                throw new RuntimeException(exception);
-            }
-        });
-        return serviceLocator.getService(RepositorySystem.class);
-    }
-
-    private DefaultRepositorySystemSession createRepositorySystemSession(RepositorySystem system, String localRepoPath) {
-        DefaultRepositorySystemSession systemSession = MavenRepositorySystemUtils.newSession();
-        LocalRepository localRepo = new LocalRepository(localRepoPath);
-        systemSession.setLocalRepositoryManager(system.newLocalRepositoryManager(systemSession, localRepo));
-        return systemSession;
+        instance = new MavenArtifactResolver(repositorySystem, systemSession, repositories);
     }
 
     /**

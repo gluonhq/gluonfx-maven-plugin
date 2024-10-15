@@ -9,15 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 5
           persist-credentials: false
 
-      - name: Setup Java 11 and Apache Maven
-        uses: actions/setup-java@v1
+      - name: Setup Java 21 and Apache Maven
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
+          distribution: 'temurin'
+          java-version: 21
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
@@ -82,7 +83,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install xmlstarlet
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 5
           persist-credentials: false
