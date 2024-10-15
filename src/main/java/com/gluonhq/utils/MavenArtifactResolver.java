@@ -93,6 +93,7 @@ public class MavenArtifactResolver {
      *
      * @param repositorySystem The entry point to Maven Artifact Resolver
      * @param systemSession The current repository/network configuration of Maven
+     * @param repositories The current list of remote repositories
      */
     public static void initRepositories(RepositorySystem repositorySystem, RepositorySystemSession systemSession, List<RemoteRepository> repositories) {
         if (instance != null) {
