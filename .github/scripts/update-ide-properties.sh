@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+
+# Exit immediately if any command in the script fails
+set -e
+
 # Update settings property file
 aws s3 cp s3://download.gluonhq.com/ideplugins/settings-2.10.4.properties /tmp --region us-east-1 --debug
 sed -i "s/gluonfxMavenPlugin=.*/gluonfxMavenPlugin=$TAG/g" /tmp/settings-2.10.4.properties
