@@ -51,14 +51,16 @@ jobs:
           persist-credentials: false
       - name: Commit next development version
         run: |
+          git config user.email "githubbot@gluonhq.com"
+          git config user.name "Gluon Bot"
           TAG=${GITHUB_REF/refs\/tags\//}
           SUBSTRATE_VERSION=$(mvn help:evaluate -Dexpression=substrate.version -q -DforceStdout)
           NEW_SUBSTRATE_VERSION=${SUBSTRATE_VERSION%.*}.$((${SUBSTRATE_VERSION##*.} + 1))
           NEW_PROJECT_VERSION=${TAG%.*}.$((${TAG##*.} + 1))
           echo "Update project version to next snapshot version"
-          mvn versions:set -DnewVersion=$NEW_PROJECT_VERSION-SNAPSHOT -DgenerateBackupPoms=false
+          mvn -ntp versions:set -DnewVersion=$NEW_PROJECT_VERSION-SNAPSHOT -DgenerateBackupPoms=false
           echo "Update Substrate to next snapshot version"
-          mvn versions:set-property -Dproperty=substrate.version -DnewVersion=$NEW_SUBSTRATE_VERSION-SNAPSHOT -DgenerateBackupPoms=false
+          mvn -ntp versions:set-property -Dproperty=substrate.version -DnewVersion=$NEW_SUBSTRATE_VERSION-SNAPSHOT -DgenerateBackupPoms=false
           git commit pom.xml -m "Prepare development of $NEW_PROJECT_VERSION"
           git push https://gluon-bot:$PAT@github.com/$GITHUB_REPOSITORY HEAD:master
         shell: bash

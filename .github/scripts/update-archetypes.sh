@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Exit immediately if any command in the script fails
+set -e
+
 ARCHETYPE_REPO_SLUG=gluonhq/gluonfx-maven-archetypes
 XML_LOCATION=src/main/resources/META-INF/maven/archetype-metadata.xml
 

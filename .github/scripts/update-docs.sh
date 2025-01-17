@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Exit immediately if any command in the script fails
+set -e
+
 DOCS_REPO_SLUG=gluonhq/docs
 
 cd /tmp

@@ -3,6 +3,10 @@
 # Exit immediately if any command in the script fails
 set -e
 
+# Add git user
+git config user.email "githubbot@gluonhq.com"
+git config user.name "Gluon Bot"
+
 echo "Update samples"
 sh $GITHUB_WORKSPACE/.github/scripts/update-samples.sh
 
