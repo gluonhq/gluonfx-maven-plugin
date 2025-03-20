@@ -42,7 +42,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.resource>21</maven.compiler.resource>
+    <maven.compiler.release>11</maven.compiler.release>
     <source.plugin.version>3.3.0</source.plugin.version>
     <javadoc.plugin.version>3.5.0</javadoc.plugin.version>
     <gpg.plugin.version>3.1.0</gpg.plugin.version>
@@ -112,10 +112,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
-        <configuration>
-          <source>21</source>
-          <target>21</target>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
