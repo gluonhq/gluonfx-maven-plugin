@@ -4,8 +4,8 @@
 set -e
 
 # Add git user
-git config user.email "githubbot@gluonhq.com"
-git config user.name "Gluon Bot"
+git config --global user.email "githubbot@gluonhq.com"
+git config --global user.name "Gluon Bot"
 
 echo "Update samples"
 sh $GITHUB_WORKSPACE/.github/scripts/update-samples.sh
