@@ -4,7 +4,3 @@ changelog:
       - housekeeping
     authors:
       - gluon-bot
-  categories:
-    - title: What’s Changed
-      labels:
-        - "*"
