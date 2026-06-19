@@ -76,9 +76,75 @@ jobs:
         with:
           generate_release_notes: true
 
-  update-repositories:
+  update:
     runs-on: ubuntu-latest
     needs: [ release ]
+    outputs:
+      TAG: ${{ steps.vars.outputs.TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: export tag
+        if: steps.deploy.outputs.exit_code == 0
+        run: |
+          export TAG=${GITHUB_REF/refs\/tags\//}
+          echo TAG=$TAG >> $GITHUB_OUTPUT
+        shell: bash
+
+  samples:
+    runs-on: ubuntu-latest
+    needs: [ update ]
+    env:
+      TAG: ${{ needs.update.outputs.TAG }}
+      REPOSITORY: gluonhq/gluon-samples
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPOSITORY }}
+          persist-credentials: false
+          token: ${{ secrets.PAT }}
+      - name: update and commit gluonfx version
+        run: |
+          mvn -ntp versions:set-property -Dproperty=gluonfx.maven.plugin.version -DnewVersion="$TAG" -DgenerateBackupPoms=false
+      - name: commit gluonfx version
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Gluon Bot
+          author_email: githubbot@gluonhq.com
+          message: 'Update gluonfx-maven-plugin version to ${{ env.TAG }}'
+
+  hello-gluon-ci:
+    runs-on: ubuntu-latest
+    needs: [ update ]
+    env:
+      TAG: ${{ needs.update.outputs.TAG }}
+      REPOSITORY: gluonhq/hello-gluon-ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPOSITORY }}
+          persist-credentials: false
+          token: ${{ secrets.PAT }}
+      - name: update gluonfx version
+        run: |
+          mvn -ntp versions:set-property -Dproperty=gluonfx.maven.plugin.version -DnewVersion="$TAG" -DgenerateBackupPoms=false
+      - name: commit gluonfx version
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Gluon Bot
+          author_email: githubbot@gluonhq.com
+          message: 'Update gluonfx-maven-plugin version to ${{ env.TAG }}'
+
+  archetypes:
+    runs-on: ubuntu-latest
+    needs: [ update ]
+    env:
+      TAG: ${{ needs.update.outputs.TAG }}
+      REPOSITORY: gluonhq/gluonfx-maven-archetypes
     steps:
       - name: Install packages
         run: |
@@ -87,15 +153,63 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 5
+          repository: ${{ env.REPOSITORY }}
           persist-credentials: false
-      - name: Update projects
-        if: steps.deploy.outputs.exit_code == 0
+          token: ${{ secrets.PAT }}
+      - name: update gluonfx version
         run: |
-          export TAG=${GITHUB_REF/refs\/tags\//}
-          bash $GITHUB_WORKSPACE/.github/scripts/release.sh
+          XML_LOCATION=src/main/resources/META-INF/maven/archetype-metadata.xml
+          # Traverse through all sub-directories starting with "gluonfx-archetype-"
+          for f in ./gluonfx-archetype-* ; do
+            # f is directory and not a symlink
+            if [[  -d "$f" && ! -L "$f" ]]; then\
+              # Update <defaultValue> inside <requiredProperty> with key='gluonfx-maven-plugin-version'
+              xmlstarlet ed -P -L -u "//_:requiredProperty[@key='gluonfx-maven-plugin-version']/_:defaultValue" -v "$TAG" "$f"/$XML_LOCATION
+          fi
+          done
         shell: bash
+      - name: commit gluonfx version
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Gluon Bot
+          author_email: githubbot@gluonhq.com
+          message: 'Update gluonfx-maven-plugin version to ${{ env.TAG }}'
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: [ update ]
+    env:
+      TAG: ${{ needs.update.outputs.TAG }}
+      REPOSITORY: gluonhq/docs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPOSITORY }}
+          persist-credentials: false
+          token: ${{ secrets.PAT }}
+      - name: update gluonfx version
+        run: |
+          sed -i "s/GLUONFX_MAVEN_PLUGIN_VERSION=.*/GLUONFX_MAVEN_PLUGIN_VERSION=$TAG/g" gradle.properties
+          sed -i "s/GLUONFX_GRADLE_PLUGIN_VERSION=.*/GLUONFX_GRADLE_PLUGIN_VERSION=$TAG/g" gradle.properties
+      - name: commit gluonfx version
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: Gluon Bot
+          author_email: githubbot@gluonhq.com
+          message: 'Update GluonFX plugins to version to ${{ env.TAG }}'
+
+  ide-properties:
+    runs-on: ubuntu-latest
+    needs: [ update ]
+    env:
+      TAG: ${{ needs.update.outputs.TAG }}
+    steps:
+      - name: update properties
+        run:
+          aws s3 cp s3://download.gluonhq.com/ideplugins/settings-2.10.4.properties /tmp --region us-east-1 --debug
+          sed -i "s/gluonfxMavenPlugin=.*/gluonfxMavenPlugin=$TAG/g" /tmp/settings-2.10.4.properties
+          aws s3 cp /tmp/settings-2.10.4.properties s3://download.gluonhq.com/ideplugins/ --acl public-read --region us-east-1 --debug
         env:
-          GITHUB_PASSWORD: ${{ secrets.PAT }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
